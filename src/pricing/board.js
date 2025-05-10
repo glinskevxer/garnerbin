@@ -81,6 +81,13 @@ export function firstNoticeDay(month, year, holidays = []) {
   return cursor;
 }
 
+/** How many months from one contract month to another, negative going back. */
+export function monthsApart(nearby, deferred) {
+  const a = typeof nearby === 'string' ? parseContract(nearby) : nearby;
+  const b = typeof deferred === 'string' ? parseContract(deferred) : deferred;
+  return (b.year - a.year) * 12 + (b.month - a.month);
+}
+
 export function isPastFirstNotice(contract, day, holidays = []) {
   return compareDays(day, firstNoticeDay(contract.month, contract.year, holidays)) >= 0;
 }

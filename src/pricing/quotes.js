@@ -3,7 +3,7 @@ import { isArray, isInteger, isPlainObject, isString } from '../core/assert.js';
 import { roundHalfUp } from '../core/numbers.js';
 import { formatPrice } from '../core/money.js';
 import { assertDay } from '../core/dates.js';
-import { formatContract, parseContract } from './board.js';
+import { formatContract, monthsApart, parseContract } from './board.js';
 
 /**
  * The settlement board for one day.
@@ -57,11 +57,7 @@ export function settleOf(board, contract) {
   return found.settle;
 }
 
-export function monthsApart(nearby, deferred) {
-  const a = typeof nearby === 'string' ? parseContract(nearby) : nearby;
-  const b = typeof deferred === 'string' ? parseContract(deferred) : deferred;
-  return (b.year - a.year) * 12 + (b.month - a.month);
-}
+export { monthsApart };
 
 /** Deferred minus nearby. Positive is carry, negative is an inverse. */
 export function spread(board, nearby, deferred) {
