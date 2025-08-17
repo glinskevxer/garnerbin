@@ -1,0 +1,116 @@
+{
+  "name": "Rush Creek Grain",
+  "commodities": ["corn", "soybeans", "hrw"],
+  "shrinkFactor": 1.4,
+  "handlingPercent": 0,
+  "holidays": ["2025-11-27", "2025-12-25", "2026-01-01"],
+  "bins": [
+    {
+      "id": "B-1",
+      "kind": "upright",
+      "diameterFeet": 48,
+      "eaveHeightFeet": 60,
+      "peakHeightFeet": 12,
+      "aerationCfm": 9000,
+      "commodity": "corn"
+    },
+    {
+      "id": "B-2",
+      "kind": "upright",
+      "diameterFeet": 48,
+      "eaveHeightFeet": 60,
+      "peakHeightFeet": 12,
+      "aerationCfm": 9000,
+      "commodity": "corn"
+    },
+    {
+      "id": "B-3",
+      "kind": "upright",
+      "diameterFeet": 36,
+      "eaveHeightFeet": 48,
+      "peakHeightFeet": 9,
+      "aerationCfm": 3600,
+      "commodity": "soybeans"
+    },
+    {
+      "id": "B-4",
+      "kind": "hopper",
+      "diameterFeet": 21,
+      "eaveHeightFeet": 30,
+      "hopperHeightFeet": 9,
+      "aerationCfm": 600
+    },
+    {
+      "id": "F-1",
+      "kind": "flat",
+      "lengthFeet": 200,
+      "widthFeet": 100,
+      "eaveHeightFeet": 18,
+      "aerationCfm": 40000,
+      "commodity": "hrw"
+    }
+  ],
+  "drying": {
+    "corn": {
+      "rounding": "tenth",
+      "freePoints": 0,
+      "tiers": [
+        { "throughPoint": 5, "ratePoints": 450 },
+        { "throughPoint": null, "ratePoints": 600 }
+      ]
+    },
+    "soybeans": { "rounding": "tenth", "ratePoints": 500 }
+  },
+  "discounts": {
+    "corn": {
+      "factors": {
+        "testWeight": {
+          "bands": [
+            { "from": 0, "to": 52, "points": 1500 },
+            { "from": 52, "to": 54, "pointsPerUnit": 100, "step": 1 },
+            { "from": 54, "to": null, "points": 0 }
+          ]
+        },
+        "damagedTotal": {
+          "bands": [
+            { "from": 0, "to": 5, "points": 0 },
+            { "from": 5, "to": null, "pointsPerUnit": 100, "step": 1 }
+          ]
+        },
+        "bcfm": {
+          "bands": [
+            { "from": 0, "to": 3, "points": 0 },
+            { "from": 3, "to": null, "pointsPerUnit": 50, "step": 1 }
+          ]
+        }
+      }
+    },
+    "soybeans": {
+      "factors": {
+        "foreignMaterial": {
+          "bands": [
+            { "from": 0, "to": 2, "points": 0 },
+            { "from": 2, "to": null, "pointsPerUnit": 150, "step": 1 }
+          ]
+        },
+        "damagedTotal": {
+          "bands": [
+            { "from": 0, "to": 3, "points": 0 },
+            { "from": 3, "to": null, "pointsPerUnit": 200, "step": 1 }
+          ]
+        }
+      }
+    }
+  },
+  "storage": {
+    "ratePointsPerMonth": 500,
+    "proration": "daily",
+    "freeUntil": "2026-01-01"
+  },
+  "delayedPrice": {
+    "ratePointsPerMonth": 400,
+    "freeDays": 15,
+    "proration": "daily"
+  },
+  "assessments": [{ "checkoffFor": "corn" }, { "checkoffFor": "soybeans" }]
+}

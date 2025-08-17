@@ -1,0 +1,9 @@
+number,day,direction,commodity,carrier,account,hauler,unit,bin,grossPounds,tarePounds,sampleId
+T-10441,2025-10-09,in,corn,hopperTrailer,HALVORSEN,Halvorsen Farms,blue peterbilt,B-1,78500,28100,S-4471
+T-10442,2025-10-09,in,corn,hopperTrailer,HALVORSEN,Halvorsen Farms,blue peterbilt,B-1,79240,28100,S-4472
+T-10443,2025-10-09,in,corn,straightTruck,DRAKE-TRUST,Ivo Drake,red ford,B-2,52180,21400,S-4473
+T-10444,2025-10-09,in,corn,hopperTrailer,KESSEL,Kessel Brothers,white kw,B-2,80100,29600,S-4474
+T-10445,2025-10-09,in,soybeans,hopperTrailer,HALVORSEN,Halvorsen Farms,blue peterbilt,B-3,77300,28100,S-4475
+T-10446,2025-10-09,in,corn,bellyDump,VOSS-LAND-CO,Voss Land Co,green mack,B-4,81200,30100,S-4476
+T-10447,2025-10-09,in,corn,hopperTrailer,KESSEL,Kessel Brothers,white kw,B-1,79880,29600,S-4477
+T-10448,2025-10-09,out,corn,railcarHopper,ARCHER-BLAIR,BNSF 476211,BNSF 476211,B-1,286000,65000,

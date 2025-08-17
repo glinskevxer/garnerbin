@@ -1,0 +1,8 @@
+id,commodity,day,grader,grams,testWeight,damagedTotal,heatDamaged,bcfm,foreignMaterial,splits,otherColors,moisture
+S-4471,corn,2025-10-09,D Ohara,1000,55.4,2.1,0,1.8,,,,15.4
+S-4472,corn,2025-10-09,D Ohara,1000,54.6,4.2,0.1,2.6,,,,16.8
+S-4473,corn,2025-10-09,D Ohara,1000,53.2,7.4,0.1,2.5,,,,18.5
+S-4474,corn,2025-10-09,R Pelz,1000,56.1,1.4,0,1.1,,,,14.6
+S-4475,soybeans,2025-10-09,R Pelz,1000,55.8,1.8,0.1,,1.4,12.5,0.4,12.6
+S-4476,corn,2025-10-09,R Pelz,1000,51.8,11.2,0.6,4.4,,,,21.2
+S-4477,corn,2025-10-09,D Ohara,1000,55,2.8,0,2,,,,15
