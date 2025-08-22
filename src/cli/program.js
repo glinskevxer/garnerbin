@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { isGarnerbinError } from '../core/errors.js';
 import { register as registerGrade } from './grade.js';
+import { register as registerSettle } from './settle.js';
 import { register as registerValidate } from './validate.js';
 
 /**
@@ -22,6 +23,7 @@ export function buildProgram(version) {
 
   registerValidate(program);
   registerGrade(program);
+  registerSettle(program);
   return program;
 }
 
