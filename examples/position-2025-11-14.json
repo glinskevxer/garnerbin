@@ -1,0 +1,35 @@
+{
+  "day": "2025-11-14",
+  "positions": [
+    {
+      "commodity": "corn",
+      "inventory": 128400000,
+      "openStorage": 31200000,
+      "receipts": 9800000,
+      "purchasesOpen": 6500000,
+      "salesOpen": 44000000,
+      "futuresShort": 40000000,
+      "futuresLong": 0
+    },
+    {
+      "commodity": "soybeans",
+      "inventory": 24600000,
+      "openStorage": 5100000,
+      "receipts": 0,
+      "purchasesOpen": 0,
+      "salesOpen": 17500000,
+      "futuresShort": 0,
+      "futuresLong": 0
+    },
+    {
+      "commodity": "hrw",
+      "inventory": 61300000,
+      "openStorage": 12000000,
+      "receipts": 4400000,
+      "purchasesOpen": 0,
+      "salesOpen": 40000000,
+      "futuresShort": 5000000,
+      "futuresLong": 0
+    }
+  ]
+}
