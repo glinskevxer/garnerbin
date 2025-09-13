@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { isGarnerbinError } from '../core/errors.js';
 import { register as registerBlend } from './blend.js';
+import { register as registerCars } from './cars.js';
 import { register as registerGrade } from './grade.js';
 import { register as registerPosition } from './position.js';
 import { register as registerRegister } from './register.js';
@@ -30,6 +31,7 @@ export function buildProgram(version) {
   registerRegister(program);
   registerPosition(program);
   registerBlend(program);
+  registerCars(program);
   return program;
 }
 
