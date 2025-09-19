@@ -1,0 +1,47 @@
+{
+  "asOf": "2026-03-01",
+  "lots": [
+    {
+      "id": "L-1",
+      "account": "HALVORSEN",
+      "commodity": "corn",
+      "bushels": 4200000,
+      "storedFrom": "2025-10-09"
+    },
+    {
+      "id": "L-2",
+      "account": "HALVORSEN",
+      "commodity": "soybeans",
+      "bushels": 820000,
+      "storedFrom": "2025-10-09"
+    },
+    {
+      "id": "L-3",
+      "account": "DRAKE-TRUST",
+      "commodity": "corn",
+      "bushels": 1550000,
+      "storedFrom": "2025-11-02"
+    },
+    {
+      "id": "L-4",
+      "account": "KESSEL",
+      "commodity": "corn",
+      "bushels": 6100000,
+      "storedFrom": "2025-10-15"
+    },
+    {
+      "id": "L-5",
+      "account": "VOSS-LAND-CO",
+      "commodity": "hrw",
+      "bushels": 3300000,
+      "storedFrom": "2025-07-08"
+    },
+    {
+      "id": "L-6",
+      "account": "KESSEL",
+      "commodity": "corn",
+      "bushels": 900000,
+      "storedFrom": "2026-02-11"
+    }
+  ]
+}

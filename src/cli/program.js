@@ -6,6 +6,7 @@ import { register as registerGrade } from './grade.js';
 import { register as registerPosition } from './position.js';
 import { register as registerRegister } from './register.js';
 import { register as registerSettle } from './settle.js';
+import { register as registerStorage } from './storage.js';
 import { register as registerValidate } from './validate.js';
 
 /**
@@ -32,6 +33,7 @@ export function buildProgram(version) {
   registerPosition(program);
   registerBlend(program);
   registerCars(program);
+  registerStorage(program);
   return program;
 }
 
