@@ -1,0 +1,63 @@
+{
+  "contracts": [
+    {
+      "id": "C-1001",
+      "kind": "forward",
+      "account": "HALVORSEN",
+      "commodity": "corn",
+      "bushels": 500000,
+      "signedOn": "2025-06-02",
+      "deliveryFrom": "2025-10-01",
+      "deliveryTo": "2025-11-30",
+      "futuresPoints": 46250,
+      "futuresContract": "ZCZ25",
+      "basisPoints": -3000
+    },
+    {
+      "id": "C-1002",
+      "kind": "hta",
+      "account": "KESSEL",
+      "commodity": "corn",
+      "bushels": 1000000,
+      "signedOn": "2025-05-14",
+      "deliveryFrom": "2025-10-01",
+      "deliveryTo": "2026-02-28",
+      "futuresPoints": 47500,
+      "futuresContract": "ZCZ25"
+    },
+    {
+      "id": "C-1003",
+      "kind": "basis",
+      "account": "DRAKE-TRUST",
+      "commodity": "corn",
+      "bushels": 300000,
+      "signedOn": "2025-08-19",
+      "deliveryFrom": "2025-10-01",
+      "deliveryTo": "2025-12-31",
+      "basisPoints": -3200
+    },
+    {
+      "id": "C-1004",
+      "kind": "dp",
+      "account": "VOSS-LAND-CO",
+      "commodity": "corn",
+      "bushels": 400000,
+      "signedOn": "2025-10-01",
+      "deliveryFrom": "2025-10-01",
+      "deliveryTo": "2026-06-30"
+    },
+    {
+      "id": "C-1005",
+      "kind": "forward",
+      "account": "HALVORSEN",
+      "commodity": "soybeans",
+      "bushels": 200000,
+      "signedOn": "2025-07-11",
+      "deliveryFrom": "2025-10-01",
+      "deliveryTo": "2025-11-30",
+      "futuresPoints": 106000,
+      "futuresContract": "ZSX25",
+      "basisPoints": -8500
+    }
+  ]
+}
