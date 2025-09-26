@@ -1,0 +1,56 @@
+{
+  "day": "2025-11-14",
+  "cashCents": 42000000,
+  "lots": [
+    {
+      "id": "H-101",
+      "commodity": "corn",
+      "contract": "ZCZ25",
+      "side": "short",
+      "contracts": 40,
+      "pricePoints": 44100,
+      "openedOn": "2025-09-15",
+      "broker": "Wheeler"
+    },
+    {
+      "id": "H-102",
+      "commodity": "corn",
+      "contract": "ZCH26",
+      "side": "short",
+      "contracts": 20,
+      "pricePoints": 45400,
+      "openedOn": "2025-10-02",
+      "broker": "Wheeler"
+    },
+    {
+      "id": "H-103",
+      "commodity": "corn",
+      "contract": "ZCH26",
+      "side": "long",
+      "contracts": 6,
+      "pricePoints": 44800,
+      "openedOn": "2025-10-20",
+      "broker": "Wheeler"
+    },
+    {
+      "id": "H-104",
+      "commodity": "soybeans",
+      "contract": "ZSX25",
+      "side": "short",
+      "contracts": 8,
+      "pricePoints": 106800,
+      "openedOn": "2025-09-29",
+      "broker": "Wheeler"
+    },
+    {
+      "id": "H-105",
+      "commodity": "hrw",
+      "contract": "KEZ25",
+      "side": "short",
+      "contracts": 10,
+      "pricePoints": 55100,
+      "openedOn": "2025-08-11",
+      "broker": "Wheeler"
+    }
+  ]
+}
