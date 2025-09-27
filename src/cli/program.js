@@ -3,6 +3,7 @@ import { isGarnerbinError } from '../core/errors.js';
 import { register as registerBlend } from './blend.js';
 import { register as registerCars } from './cars.js';
 import { register as registerContracts } from './contracts.js';
+import { register as registerExceptions } from './exceptions.js';
 import { register as registerGrade } from './grade.js';
 import { register as registerHedge } from './hedge.js';
 import { register as registerPosition } from './position.js';
@@ -38,6 +39,7 @@ export function buildProgram(version) {
   registerStorage(program);
   registerContracts(program);
   registerHedge(program);
+  registerExceptions(program);
   return program;
 }
 
