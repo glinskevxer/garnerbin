@@ -1,0 +1,183 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: lint and format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.18.2
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+
+  test:
+    name: test on node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20.18.2', '22.13.1', '24.20.0']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  coverage:
+    name: coverage thresholds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.18.2
+          cache: npm
+      - run: npm ci
+      - run: npm run coverage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/lcov.info
+          if-no-files-found: error
+
+  audit:
+    name: audit runtime dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.18.2
+          cache: npm
+      - run: npm ci
+      - run: npm audit --omit=dev --audit-level=moderate
+
+  worked-day:
+    name: run the worked day
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.18.2
+          cache: npm
+      - run: npm ci --omit=dev
+
+      - name: validate
+        run: npm run validate
+
+      - name: grade
+        run: npm run grade
+
+      - name: settle
+        run: npm run settle
+
+      - name: register
+        run: npm run register
+
+      - name: position
+        run: npm run position
+
+      - name: contracts
+        run: npm run contracts
+
+      - name: storage
+        run: npm run storage
+
+      - name: hedge
+        run: npm run hedge
+
+      - name: cars
+        run: npm run cars
+
+      - name: blend
+        run: npm run blend
+
+      - name: exceptions
+        run: npm run exceptions
+
+      - name: doctor
+        run: npm run doctor
+
+      - name: book
+        run: npm run book
+
+      - name: book the day and keep the journal
+        run: |
+          node bin/garnerbin.js book \
+            -c examples/rush-creek.json \
+            -t examples/tickets-2025-10-09.csv \
+            -s examples/samples-2025-10-09.csv \
+            -b 4.2750 -o /tmp/journal.json
+
+      - name: the journal seals the same way twice
+        run: |
+          node bin/garnerbin.js book -c examples/rush-creek.json \
+            -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv \
+            -b 4.2750 | grep -o 'seals to [0-9a-f]*' > /tmp/seal-a.txt
+          node bin/garnerbin.js book -c examples/rush-creek.json \
+            -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv \
+            -b 4.2750 | grep -o 'seals to [0-9a-f]*' > /tmp/seal-b.txt
+          diff /tmp/seal-a.txt /tmp/seal-b.txt
+          test -s /tmp/seal-a.txt
+
+      - name: write the settlements and the register out
+        run: |
+          node bin/garnerbin.js settle -c examples/rush-creek.json \
+            -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv \
+            -b 4.2750 -o /tmp/settlements.csv
+          node bin/garnerbin.js register -c examples/rush-creek.json \
+            -t examples/tickets-2025-10-09.csv -o /tmp/register.csv
+
+      - name: check what was written
+        run: |
+          test -s /tmp/settlements.csv
+          test -s /tmp/register.csv
+          test -s /tmp/journal.json
+          head -1 /tmp/settlements.csv | grep -q '^ticket,day,account'
+          head -1 /tmp/register.csv | grep -q '^ticket,day,direction'
+          node -e "
+            const { readFileSync } = require('node:fs');
+            const journal = JSON.parse(readFileSync('/tmp/journal.json', 'utf8'));
+            if (journal.entries.length !== 15) throw new Error('journal holds ' + journal.entries.length);
+            if (!/^[0-9a-f]{64}\$/.test(journal.head)) throw new Error('journal carries no seal');
+          "
+
+      - name: the version on the command line matches the package
+        run: |
+          test "$(node bin/garnerbin.js --version)" = "$(node -p "require('./package.json').version")"
+
+      - name: run it twice and get the same answer
+        run: |
+          npm run --silent grade > /tmp/first.txt
+          npm run --silent grade > /tmp/second.txt
+          diff /tmp/first.txt /tmp/second.txt
+
+  image:
+    name: build the container image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: build
+        run: docker build -t garnerbin:ci .
+      - name: run the worked day inside it
+        run: |
+          docker run --rm -v "$PWD/examples:/desk/examples:ro" garnerbin:ci \
+            validate -c examples/rush-creek.json --strict
