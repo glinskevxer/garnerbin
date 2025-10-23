@@ -1,5 +1,8 @@
-period,contract,basis
-2025-10,ZCZ25,-0.3500
-2025-12,ZCZ25,-0.3000
-2026-03,ZCH26,-0.2500
-2026-05,ZCK26,-0.2200
+commodity,period,contract,basis
+corn,2025-10,ZCZ25,-0.3500
+corn,2025-12,ZCZ25,-0.3000
+corn,2026-03,ZCH26,-0.2500
+corn,2026-05,ZCK26,-0.2200
+soybeans,2025-10,ZSX25,-0.8500
+soybeans,2026-01,ZSF26,-0.7800
+hrw,2025-10,KEZ25,-0.6500

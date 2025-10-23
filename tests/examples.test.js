@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { loadHouse, takes } from '../src/config/house.js';
 import { importSamples, importTickets } from '../src/io/importers.js';
-import { importBasisBoard, importQuoteBoard } from '../src/io/importers.js';
+import { importBasisBook, importQuoteBoard } from '../src/io/importers.js';
 import { settleLoad } from '../src/settlement/settle.js';
 import { bidFrom } from '../src/pricing/basis.js';
 import { settleOf } from '../src/pricing/quotes.js';
@@ -14,11 +14,11 @@ const house = loadHouse(JSON.parse(read('rush-creek.json')));
 const tickets = importTickets(read('tickets-2025-10-09.csv'));
 const samples = importSamples(read('samples-2025-10-09.csv'));
 const board = importQuoteBoard(read('board-2025-10-09.csv'), '2025-10-09');
-const basis = importBasisBoard(read('basis-2025-10-09.csv'), {
+const basisBook = importBasisBook(read('basis-2025-10-09.csv'), {
   house: 'Rush Creek Grain',
-  commodity: 'corn',
   day: '2025-10-09',
 });
+const basis = basisBook.boards.corn;
 
 describe('the worked day loads', () => {
   it('reads the house file with no problems', () => {

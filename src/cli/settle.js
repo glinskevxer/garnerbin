@@ -5,6 +5,7 @@ import { heading, keyValue, renderTable } from '../core/text.js';
 import { settleLoad } from '../settlement/settle.js';
 import { statementFor } from '../settlement/statement.js';
 import { bidFrom } from '../pricing/basis.js';
+import { quoteFor } from '../pricing/basisbook.js';
 import { settleOf } from '../pricing/quotes.js';
 import { toCsv } from '../io/csv.js';
 import {
@@ -36,18 +37,9 @@ export function bidFor(options, commodity) {
     });
   }
   const board = readBoard(options.board, options.day);
-  const basis = readBasis(options.basis, {
-    house: 'desk',
-    commodity,
-    day: options.day,
-  });
-  const quote = basis.quotes.find((entry) => entry.period === options.period);
-  if (!quote) {
-    throw new ConfigError('NO_PERIOD', `the basis file does not quote ${options.period}`, {
-      period: options.period,
-    });
-  }
-  return bidFrom(basis, options.period, settleOf(board, quote.contract));
+  const book = readBasis(options.basis, { house: 'desk', day: options.day });
+  const quote = quoteFor(book, commodity, options.period);
+  return bidFrom(book.boards[commodity], options.period, settleOf(board, quote.contract));
 }
 
 export function runSettle(options) {

@@ -3,6 +3,7 @@ import { monthKey } from '../core/dates.js';
 import { formatContract } from '../pricing/board.js';
 import { openLot } from '../hedging/hedge.js';
 import { createContract } from '../contracts/types.js';
+import { periodsFor } from '../pricing/basisbook.js';
 import { readBasis, readBoard, readHouse, readJsonFile, readSamples, readTickets } from './desk.js';
 
 /**
@@ -142,13 +143,23 @@ export function runDoctor(options) {
 
   if (options.basis && tickets.length > 0) {
     const day = options.day ?? tickets[0].day;
-    const basis = readBasis(options.basis, { house: house.name, commodity: 'corn', day });
+    const book = readBasis(options.basis, { house: house.name, day });
     checked.push('basis');
-    const periods = new Set(basis.quotes.map((quote) => quote.period));
-    if (!periods.has(monthKey(day))) {
-      findings.push(
-        finding('warn', 'NO_BASIS_FOR_DAY', `the basis file does not quote ${monthKey(day)}`)
-      );
+    for (const commodity of house.commodities) {
+      if (!book.boards[commodity]) {
+        findings.push(finding('warn', 'NO_BASIS_POSTED', `no basis is posted for ${commodity}`));
+        continue;
+      }
+      const periods = new Set(periodsFor(book, commodity));
+      if (!periods.has(monthKey(day))) {
+        findings.push(
+          finding(
+            'warn',
+            'NO_BASIS_FOR_DAY',
+            `the ${commodity} basis does not quote ${monthKey(day)}`
+          )
+        );
+      }
     }
   }
 

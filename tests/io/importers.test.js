@@ -6,7 +6,7 @@ import { settleOf } from '../../src/pricing/quotes.js';
 import { basisFor } from '../../src/pricing/basis.js';
 import {
   FORMATS,
-  importBasisBoard,
+  importBasisBook,
   importQuoteBoard,
   importSamples,
   importTickets,
@@ -111,14 +111,16 @@ describe('importing boards', () => {
     expect(formatPrice(settleOf(board, 'ZCZ25'))).toBe('4.2500');
   });
 
-  it('reads a basis board', () => {
-    const csv = ['period,contract,basis', '2025-10,ZCZ25,-0.3500', ''].join('\n');
-    const board = importBasisBoard(csv, {
-      house: 'Rush Creek',
-      commodity: 'corn',
-      day: '2025-10-09',
-    });
-    expect(basisFor(board, '2025-10')).toBe(-3500);
+  it('reads a basis book with a row for each commodity', () => {
+    const csv = [
+      'commodity,period,contract,basis',
+      'corn,2025-10,ZCZ25,-0.3500',
+      'soybeans,2025-10,ZSX25,-0.8500',
+      '',
+    ].join('\n');
+    const book = importBasisBook(csv, { house: 'Rush Creek', day: '2025-10-09' });
+    expect(basisFor(book.boards.corn, '2025-10')).toBe(-3500);
+    expect(basisFor(book.boards.soybeans, '2025-10')).toBe(-8500);
   });
 });
 

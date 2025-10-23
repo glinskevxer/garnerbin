@@ -72,7 +72,9 @@ describe('the register with settlements', () => {
       period: '2025-10',
       day: '2025-10-09',
     });
-    expect(fromBoard.register.totals.netCents).toBeLessThan(result.register.totals.netCents);
+    const cornAtBoard = fromBoard.register.rows.find((row) => row.ticket === 'T-10441');
+    const cornAtBid = result.register.rows.find((row) => row.ticket === 'T-10441');
+    expect(cornAtBoard.netCents).toBeLessThan(cornAtBid.netCents);
   });
 });
 

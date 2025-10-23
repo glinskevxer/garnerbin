@@ -3,7 +3,7 @@ import { ConfigError } from '../core/errors.js';
 import { isString } from '../core/assert.js';
 import { loadHouse } from '../config/house.js';
 import {
-  importBasisBoard,
+  importBasisBook,
   importQuoteBoard,
   importSamples,
   importTickets,
@@ -55,8 +55,8 @@ export function readBoard(path, day) {
   return importQuoteBoard(readText(path, 'board file'), day);
 }
 
-export function readBasis(path, { house, commodity, day }) {
-  return importBasisBoard(readText(path, 'basis file'), { house, commodity, day });
+export function readBasis(path, { house, day }) {
+  return importBasisBook(readText(path, 'basis file'), { house, day });
 }
 
 /** Index samples by id so a ticket can find the one that belongs to it. */

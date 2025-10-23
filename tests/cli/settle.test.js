@@ -60,7 +60,7 @@ describe('working out the bid', () => {
         },
         'corn'
       )
-    ).toThrow(/does not quote 2027-01/);
+    ).toThrow(/does not quote corn for 2027-01/);
   });
 });
 

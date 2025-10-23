@@ -4,7 +4,7 @@ import { parsePrice } from '../core/money.js';
 import { createTicket } from '../weights/ticket.js';
 import { createSample } from '../grading/sample.js';
 import { createQuoteBoard } from '../pricing/quotes.js';
-import { createBasisBoard } from '../pricing/basis.js';
+import { buildBasisBook } from '../pricing/basisbook.js';
 import { parseRecords } from './csv.js';
 import { parseFixed } from './fixed.js';
 
@@ -121,18 +121,21 @@ export function importQuoteBoard(text, day, options = {}) {
   });
 }
 
-export function importBasisBoard(text, { house, commodity, day }, options = {}) {
+/**
+ * A basis file carries the commodity on every row, so one file covers the whole
+ * house and nothing has to guess which grain a quote belongs to.
+ */
+export function importBasisBook(text, { house, day }, options = {}) {
   const rows = readRows(text, options);
-  return createBasisBoard({
-    house,
-    commodity,
-    day,
-    quotes: rows.map((row) => ({
+  return buildBasisBook(
+    rows.map((row) => ({
+      commodity: row.commodity,
       period: row.period,
       contract: row.contract,
       basisPoints: parsePrice(String(row.basis)),
     })),
-  });
+    { house, day }
+  );
 }
 
 export function summariseImport(result, what = 'rows') {
