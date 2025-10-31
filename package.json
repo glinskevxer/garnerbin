@@ -22,6 +22,7 @@
     "README.md"
   ],
   "scripts": {
+    "accounts": "node bin/garnerbin.js accounts -f examples/accounts-2025.json",
     "blend": "node bin/garnerbin.js blend -s examples/samples-2025-10-09.csv --base S-4474 --base-bushels 100000 --add S-4476 --add-bushels 20000 --target 2",
     "book": "node bin/garnerbin.js book -c examples/rush-creek.json -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv -b 4.2750",
     "cars": "node bin/garnerbin.js cars -b 450000 --commodity corn --car hopper4750",

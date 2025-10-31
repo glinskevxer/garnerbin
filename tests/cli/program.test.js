@@ -23,6 +23,7 @@ describe('the program', () => {
   it('registers every command the readme names', () => {
     const names = program.commands.map((command) => command.name()).sort();
     expect(names).toEqual([
+      'accounts',
       'blend',
       'book',
       'cars',

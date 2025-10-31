@@ -113,6 +113,9 @@ jobs:
       - name: exceptions
         run: npm run exceptions
 
+      - name: accounts
+        run: npm run accounts
+
       - name: doctor
         run: npm run doctor
 
