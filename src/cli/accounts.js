@@ -1,7 +1,6 @@
 import { writeFileSync } from 'node:fs';
 import { ConfigError } from '../core/errors.js';
 import { heading, keyValue } from '../core/text.js';
-import { formatMoney } from '../core/money.js';
 import { createAccount, openLedger, postAll } from '../accounts/grower.js';
 import {
   buildGrowerStatement,
@@ -103,5 +102,3 @@ export function register(program) {
       console.log(runAccounts(options).text);
     });
 }
-
-export { formatMoney };

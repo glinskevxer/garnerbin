@@ -69,8 +69,10 @@ export * as schema from './io/schema.js';
 export * as importers from './io/importers.js';
 
 export * as journal from './audit/journal.js';
+export * as growers from './accounts/grower.js';
 export * as house from './config/house.js';
 
 export * as register from './report/register.js';
 export * as grades from './report/grades.js';
 export * as exceptions from './report/exceptions.js';
+export * as growerstatement from './report/growerstatement.js';

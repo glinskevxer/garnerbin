@@ -2,7 +2,7 @@ import { ContractError } from '../core/errors.js';
 import { isInteger, isPlainObject, nonNegative, oneOf } from '../core/assert.js';
 import { roundHalfUp } from '../core/numbers.js';
 import { chargePerBushel } from '../core/money.js';
-import { assertDay, compareDays, daysBetween } from '../core/dates.js';
+import { addDays, assertDay, compareDays, daysBetween } from '../core/dates.js';
 
 /**
  * Delayed price service charges.
@@ -76,16 +76,5 @@ export function accrualAsOf(terms, { bushelHundredths, deliveredOn, asOf }) {
 
 /** The day the charge would first bite, which is what the grower asks. */
 export function firstChargeDay(terms, deliveredOn) {
-  assertDay(deliveredOn, 'deliveredOn');
-  const { addDays } = { addDays: (day, count) => shift(day, count) };
-  return addDays(deliveredOn, terms.freeDays + 1);
-}
-
-function shift(day, count) {
-  const stamp = Date.UTC(
-    Number(day.slice(0, 4)),
-    Number(day.slice(5, 7)) - 1,
-    Number(day.slice(8, 10)) + count
-  );
-  return new Date(stamp).toISOString().slice(0, 10);
+  return addDays(assertDay(deliveredOn, 'deliveredOn'), terms.freeDays + 1);
 }

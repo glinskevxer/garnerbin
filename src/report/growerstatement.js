@@ -2,7 +2,7 @@ import { isPlainObject } from '../core/assert.js';
 import { assertDay, compareDays } from '../core/dates.js';
 import { formatMoney } from '../core/money.js';
 import { heading, keyValue, renderTable } from '../core/text.js';
-import { balance, postingsBetween, runningBalance } from '../accounts/grower.js';
+import { balance, postingsBetween } from '../accounts/grower.js';
 import { toCsv } from '../io/csv.js';
 
 /**
@@ -139,5 +139,3 @@ export function renderPayables(rows) {
     ]),
   ].join('\n');
 }
-
-export { runningBalance };

@@ -2,14 +2,7 @@ import { heading, keyValue, renderTable } from '../core/text.js';
 import { capacityOf } from '../inventory/bins.js';
 import { formatBushels } from '../core/money.js';
 import { houseSummary } from '../config/house.js';
-import {
-  assertClean,
-  readHouse,
-  readSamples,
-  readTickets,
-  sampleForTicket,
-  sampleIndex,
-} from './desk.js';
+import { readHouse, readSamples, readTickets, sampleForTicket, sampleIndex } from './desk.js';
 
 /**
  * Read everything the desk is pointed at and say whether it holds together.
@@ -92,5 +85,3 @@ export function register(program) {
       if (options.strict && result.problems.length > 0) process.exitCode = 1;
     });
 }
-
-export { assertClean };
