@@ -20,6 +20,7 @@ export * as standards from './grading/standards.js';
 export * as grade from './grading/grade.js';
 export * as special from './grading/special.js';
 export * as dockage from './grading/dockage.js';
+export * as protein from './grading/protein.js';
 export * as sample from './grading/sample.js';
 export * as probe from './grading/probe.js';
 export * as certificate from './grading/certificate.js';
