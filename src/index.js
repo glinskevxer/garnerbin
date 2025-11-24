@@ -52,6 +52,7 @@ export * as delayedPrice from './contracts/dp.js';
 export * as storage from './storage/accrual.js';
 export * as receipts from './storage/receipts.js';
 
+export * as aeration from './inventory/aeration.js';
 export * as bins from './inventory/bins.js';
 export * as movements from './inventory/movements.js';
 export * as blend from './inventory/blend.js';
