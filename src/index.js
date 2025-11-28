@@ -65,6 +65,7 @@ export * as marktomarket from './hedging/marktomarket.js';
 
 export * as orders from './loadout/orders.js';
 export * as rail from './loadout/rail.js';
+export * as truck from './loadout/truck.js';
 
 export * as csv from './io/csv.js';
 export * as fixed from './io/fixed.js';
