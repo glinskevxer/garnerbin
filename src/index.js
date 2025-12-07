@@ -37,6 +37,7 @@ export * as basis from './pricing/basis.js';
 export * as basisbook from './pricing/basisbook.js';
 export * as quotes from './pricing/quotes.js';
 export * as discounts from './pricing/discounts.js';
+export * as freight from './pricing/freight.js';
 export * as premiums from './pricing/premiums.js';
 
 export * as deductions from './settlement/deductions.js';
