@@ -40,6 +40,7 @@ export * as discounts from './pricing/discounts.js';
 export * as freight from './pricing/freight.js';
 export * as premiums from './pricing/premiums.js';
 
+export * as advance from './settlement/advance.js';
 export * as deductions from './settlement/deductions.js';
 export * as settle from './settlement/settle.js';
 export * as statement from './settlement/statement.js';
