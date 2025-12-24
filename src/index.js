@@ -50,6 +50,7 @@ export * as apply from './contracts/apply.js';
 export * as roll from './contracts/roll.js';
 export * as pricing from './contracts/pricing.js';
 export * as delayedPrice from './contracts/dp.js';
+export * as minprice from './contracts/minprice.js';
 
 export * as storage from './storage/accrual.js';
 export * as receipts from './storage/receipts.js';
