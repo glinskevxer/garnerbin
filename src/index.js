@@ -33,6 +33,7 @@ export * as conversion from './weights/conversion.js';
 export * as reconcile from './weights/reconcile.js';
 
 export * as board from './pricing/board.js';
+export * as bands from './pricing/bands.js';
 export * as basis from './pricing/basis.js';
 export * as basisbook from './pricing/basisbook.js';
 export * as quotes from './pricing/quotes.js';
