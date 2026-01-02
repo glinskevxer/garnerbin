@@ -26,6 +26,7 @@
     "blend": "node bin/garnerbin.js blend -s examples/samples-2025-10-09.csv --base S-4474 --base-bushels 100000 --add S-4476 --add-bushels 20000 --target 2",
     "book": "node bin/garnerbin.js book -c examples/rush-creek.json -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv -b 4.2750",
     "cars": "node bin/garnerbin.js cars -b 450000 --commodity corn --car hopper4750",
+    "close": "node bin/garnerbin.js close -c examples/rush-creek.json -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv -b 4.2750 --measured 1948.56",
     "contracts": "node bin/garnerbin.js contracts -f examples/contracts-2025.json -t examples/tickets-2025-10-09.csv",
     "coverage": "vitest run --coverage",
     "doctor": "node bin/garnerbin.js doctor -c examples/rush-creek.json -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv --contracts examples/contracts-2025.json --board examples/board-2025-10-09.csv --basis examples/basis-2025-10-09.csv",

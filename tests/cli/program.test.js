@@ -27,6 +27,7 @@ describe('the program', () => {
       'blend',
       'book',
       'cars',
+      'close',
       'contracts',
       'doctor',
       'exceptions',

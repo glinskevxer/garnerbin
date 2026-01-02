@@ -116,6 +116,9 @@ jobs:
       - name: accounts
         run: npm run accounts
 
+      - name: close
+        run: npm run close || true
+
       - name: doctor
         run: npm run doctor
 

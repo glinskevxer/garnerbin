@@ -4,6 +4,7 @@ import { register as registerAccounts } from './accounts.js';
 import { register as registerBlend } from './blend.js';
 import { register as registerBook } from './book.js';
 import { register as registerCars } from './cars.js';
+import { register as registerClose } from './close.js';
 import { register as registerContracts } from './contracts.js';
 import { register as registerDoctor } from './doctor.js';
 import { register as registerExceptions } from './exceptions.js';
@@ -46,6 +47,7 @@ export function buildProgram(version) {
   registerBook(program);
   registerDoctor(program);
   registerAccounts(program);
+  registerClose(program);
   return program;
 }
 
