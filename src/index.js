@@ -31,6 +31,7 @@ export * as drying from './weights/drying.js';
 export * as ticket from './weights/ticket.js';
 export * as conversion from './weights/conversion.js';
 export * as reconcile from './weights/reconcile.js';
+export * as scaleaudit from './weights/scaleaudit.js';
 
 export * as board from './pricing/board.js';
 export * as bands from './pricing/bands.js';
