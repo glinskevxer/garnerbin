@@ -24,6 +24,7 @@ export * as protein from './grading/protein.js';
 export * as sample from './grading/sample.js';
 export * as probe from './grading/probe.js';
 export * as certificate from './grading/certificate.js';
+export * as retention from './grading/retention.js';
 
 export * as moisture from './weights/moisture.js';
 export * as shrink from './weights/shrink.js';
