@@ -62,6 +62,7 @@ export * as aeration from './inventory/aeration.js';
 export * as bins from './inventory/bins.js';
 export * as movements from './inventory/movements.js';
 export * as blend from './inventory/blend.js';
+export * as grainbank from './inventory/grainbank.js';
 export * as temperature from './inventory/temperature.js';
 export * as position from './inventory/position.js';
 export * as dpr from './inventory/dpr.js';
