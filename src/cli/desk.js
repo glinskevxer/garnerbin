@@ -59,31 +59,6 @@ export function readBasis(path, { house, day }) {
   return importBasisBook(readText(path, 'basis file'), { house, day });
 }
 
-/** Index samples by id so a ticket can find the one that belongs to it. */
-export function sampleIndex(samples) {
-  return new Map(samples.map((sample) => [sample.id, sample]));
-}
-
-export function sampleForTicket(index, ticket) {
-  if (!ticket.sampleId) {
-    throw new ConfigError('TICKET_HAS_NO_SAMPLE', `${ticket.number} names no sample`, {
-      ticket: ticket.number,
-    });
-  }
-  const sample = index.get(ticket.sampleId);
-  if (!sample) {
-    throw new ConfigError(
-      'SAMPLE_NOT_FOUND',
-      `${ticket.number} names sample ${ticket.sampleId}, which is not in the file`,
-      {
-        ticket: ticket.number,
-        sample: ticket.sampleId,
-      }
-    );
-  }
-  return sample;
-}
-
 /** Refuse to work from an import that had rows it could not build. */
 export function assertClean(result, what) {
   if (result.problems.length > 0) {

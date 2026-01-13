@@ -2,22 +2,14 @@ import { writeFileSync } from 'node:fs';
 import { ConfigError } from '../core/errors.js';
 import { parsePrice, formatBushels, formatMoney, formatPrice } from '../core/money.js';
 import { heading, keyValue, renderTable } from '../core/text.js';
-import { settleLoad } from '../settlement/settle.js';
+import { settleAgainstHouse } from '../settlement/day.js';
 import { statementFor } from '../settlement/statement.js';
 import { bidFrom } from '../pricing/basis.js';
 import { quoteFor } from '../pricing/basisbook.js';
 import { settleOf } from '../pricing/quotes.js';
 import { toCsv } from '../io/csv.js';
-import {
-  assertClean,
-  readBasis,
-  readBoard,
-  readHouse,
-  readSamples,
-  readTickets,
-  sampleForTicket,
-  sampleIndex,
-} from './desk.js';
+import { sampleForTicket, sampleIndex } from '../grading/sample.js';
+import { assertClean, readBasis, readBoard, readHouse, readSamples, readTickets } from './desk.js';
 
 /**
  * Settle the inbound loads on a day.
@@ -61,15 +53,10 @@ export function runSettle(options) {
   }
 
   const settlements = wanted.map((ticket) =>
-    settleLoad({
+    settleAgainstHouse(house, {
       ticket,
       sample: sampleForTicket(index, ticket),
       bidPoints: bidFor(options, ticket.commodity),
-      discountSchedule: house.discounts[ticket.commodity] ?? null,
-      dryingSchedule: house.drying[ticket.commodity] ?? null,
-      assessments: house.assessments.filter((entry) => entry.id.startsWith(ticket.commodity)),
-      shrinkFactor: house.shrinkFactor,
-      handlingPercent: house.handlingPercent,
     })
   );
 

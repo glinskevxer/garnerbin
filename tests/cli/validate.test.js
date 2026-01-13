@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { fileURLToPath } from 'node:url';
 import { runValidate } from '../../src/cli/validate.js';
-import { readHouse, sampleForTicket, sampleIndex } from '../../src/cli/desk.js';
+import { sampleForTicket, sampleIndex } from '../../src/grading/sample.js';
+import { readHouse } from '../../src/cli/desk.js';
 
 const example = (name) => fileURLToPath(new URL(`../../examples/${name}`, import.meta.url));
 

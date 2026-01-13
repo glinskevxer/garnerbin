@@ -161,3 +161,26 @@ export function readingsOf(sample) {
   }
   return readings;
 }
+
+/** Index a set of samples by id so a ticket can find the one that belongs to it. */
+export function sampleIndex(samples) {
+  isArray(samples, 'samples');
+  return new Map(samples.map((sample) => [sample.id, sample]));
+}
+
+export function sampleForTicket(index, ticket) {
+  if (!ticket.sampleId) {
+    throw new TicketError('TICKET_HAS_NO_SAMPLE', `${ticket.number} names no sample`, {
+      ticket: ticket.number,
+    });
+  }
+  const sample = index.get(ticket.sampleId);
+  if (!sample) {
+    throw new TicketError(
+      'SAMPLE_NOT_FOUND',
+      `${ticket.number} names sample ${ticket.sampleId}, which is not in the file`,
+      { ticket: ticket.number, sample: ticket.sampleId }
+    );
+  }
+  return sample;
+}

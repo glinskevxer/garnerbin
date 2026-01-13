@@ -2,17 +2,10 @@ import { writeFileSync } from 'node:fs';
 import { formatBushels, formatMoney } from '../core/money.js';
 import { heading, keyValue } from '../core/text.js';
 import { appendAll, openJournal, verifyJournal } from '../audit/journal.js';
-import { settleLoad } from '../settlement/settle.js';
+import { settleDay } from '../settlement/day.js';
 import { grossBushelsOf } from '../weights/ticket.js';
 import { bidFor } from './settle.js';
-import {
-  assertClean,
-  readHouse,
-  readSamples,
-  readTickets,
-  sampleForTicket,
-  sampleIndex,
-} from './desk.js';
+import { assertClean, readHouse, readSamples, readTickets } from './desk.js';
 
 /**
  * Book a day into the audit journal.
@@ -23,7 +16,6 @@ import {
  */
 
 export function entriesForDay(house, tickets, samples, options) {
-  const index = sampleIndex(samples);
   const entries = [];
   for (const ticket of tickets) {
     entries.push({
@@ -40,19 +32,15 @@ export function entriesForDay(house, tickets, samples, options) {
     });
   }
   if (!options.bid && !options.board) return entries;
-  for (const ticket of tickets.filter((entry) => entry.direction === 'in')) {
-    const settlement = settleLoad({
-      ticket,
-      sample: sampleForTicket(index, ticket),
-      bidPoints: bidFor(options, ticket.commodity),
-      discountSchedule: house.discounts[ticket.commodity] ?? null,
-      dryingSchedule: house.drying[ticket.commodity] ?? null,
-      assessments: house.assessments.filter((entry) => entry.id.startsWith(ticket.commodity)),
-      shrinkFactor: house.shrinkFactor,
-      handlingPercent: house.handlingPercent,
-    });
+  const settlements = settleDay({
+    house,
+    tickets,
+    samples,
+    bidFor: (commodity) => bidFor(options, commodity),
+  });
+  for (const settlement of settlements) {
     entries.push({
-      day: ticket.day,
+      day: settlement.day,
       event: 'settlement',
       detail: {
         ticket: settlement.ticket,

@@ -46,6 +46,7 @@ export * as premiums from './pricing/premiums.js';
 export * as advance from './settlement/advance.js';
 export * as deductions from './settlement/deductions.js';
 export * as settle from './settlement/settle.js';
+export * as settlementday from './settlement/day.js';
 export * as statement from './settlement/statement.js';
 
 export * as contracts from './contracts/types.js';

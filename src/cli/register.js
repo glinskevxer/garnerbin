@@ -1,16 +1,9 @@
 import { writeFileSync } from 'node:fs';
 import { ConfigError } from '../core/errors.js';
 import { buildRegister, registerCsv, renderRegister } from '../report/register.js';
-import { settleLoad } from '../settlement/settle.js';
+import { settleDay } from '../settlement/day.js';
 import { bidFor } from './settle.js';
-import {
-  assertClean,
-  readHouse,
-  readSamples,
-  readTickets,
-  sampleForTicket,
-  sampleIndex,
-} from './desk.js';
+import { assertClean, readHouse, readSamples, readTickets } from './desk.js';
 
 /**
  * The daily ticket register.
@@ -33,21 +26,13 @@ export function runRegister(options) {
   let settlements = [];
   if (options.samples && (options.bid || options.board)) {
     const samples = assertClean(readSamples(options.samples), 'sample');
-    const index = sampleIndex(samples);
-    settlements = onDay
-      .filter((ticket) => ticket.direction === 'in')
-      .map((ticket) =>
-        settleLoad({
-          ticket,
-          sample: sampleForTicket(index, ticket),
-          bidPoints: bidFor(options, ticket.commodity),
-          discountSchedule: house.discounts[ticket.commodity] ?? null,
-          dryingSchedule: house.drying[ticket.commodity] ?? null,
-          assessments: house.assessments.filter((entry) => entry.id.startsWith(ticket.commodity)),
-          shrinkFactor: house.shrinkFactor,
-          handlingPercent: house.handlingPercent,
-        })
-      );
+    settlements = settleDay({
+      house,
+      tickets: onDay,
+      samples,
+      day,
+      bidFor: (commodity) => bidFor(options, commodity),
+    });
   }
 
   const register = buildRegister({ day, house: house.name, tickets: onDay, settlements });

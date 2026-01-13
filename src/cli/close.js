@@ -2,16 +2,9 @@ import { writeFileSync } from 'node:fs';
 import { ConfigError } from '../core/errors.js';
 import { bushelsFromDecimal } from '../core/money.js';
 import { closeDay, needsAttention, renderClose } from '../report/dailyclose.js';
-import { settleLoad } from '../settlement/settle.js';
+import { settleDay } from '../settlement/day.js';
 import { bidFor } from './settle.js';
-import {
-  assertClean,
-  readHouse,
-  readSamples,
-  readTickets,
-  sampleForTicket,
-  sampleIndex,
-} from './desk.js';
+import { assertClean, readHouse, readSamples, readTickets } from './desk.js';
 
 /**
  * Close the day.
@@ -32,21 +25,13 @@ export function runClose(options) {
   let settlements = [];
   if (options.samples && (options.bid || options.board)) {
     const samples = assertClean(readSamples(options.samples), 'sample');
-    const index = sampleIndex(samples);
-    settlements = tickets
-      .filter((ticket) => ticket.day === day && ticket.direction === 'in')
-      .map((ticket) =>
-        settleLoad({
-          ticket,
-          sample: sampleForTicket(index, ticket),
-          bidPoints: bidFor(options, ticket.commodity),
-          discountSchedule: house.discounts[ticket.commodity] ?? null,
-          dryingSchedule: house.drying[ticket.commodity] ?? null,
-          assessments: house.assessments.filter((entry) => entry.id.startsWith(ticket.commodity)),
-          shrinkFactor: house.shrinkFactor,
-          handlingPercent: house.handlingPercent,
-        })
-      );
+    settlements = settleDay({
+      house,
+      tickets,
+      samples,
+      day,
+      bidFor: (commodity) => bidFor(options, commodity),
+    });
   }
 
   const close = closeDay({
