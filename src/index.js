@@ -71,6 +71,7 @@ export * as dpr from './inventory/dpr.js';
 export * as hedge from './hedging/hedge.js';
 export * as marktomarket from './hedging/marktomarket.js';
 
+export * as manifest from './loadout/manifest.js';
 export * as orders from './loadout/orders.js';
 export * as rail from './loadout/rail.js';
 export * as truck from './loadout/truck.js';
