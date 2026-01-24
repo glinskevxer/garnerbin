@@ -38,6 +38,7 @@ export * as board from './pricing/board.js';
 export * as bands from './pricing/bands.js';
 export * as basis from './pricing/basis.js';
 export * as basisbook from './pricing/basisbook.js';
+export * as bidsheet from './pricing/bidsheet.js';
 export * as quotes from './pricing/quotes.js';
 export * as discounts from './pricing/discounts.js';
 export * as freight from './pricing/freight.js';
