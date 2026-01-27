@@ -83,6 +83,9 @@ jobs:
       - name: validate
         run: npm run validate
 
+      - name: bids
+        run: npm run bids || true
+
       - name: grade
         run: npm run grade
 

@@ -24,6 +24,7 @@ describe('the program', () => {
     const names = program.commands.map((command) => command.name()).sort();
     expect(names).toEqual([
       'accounts',
+      'bids',
       'blend',
       'book',
       'cars',
