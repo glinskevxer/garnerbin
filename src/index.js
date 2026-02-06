@@ -84,6 +84,7 @@ export * as schema from './io/schema.js';
 export * as importers from './io/importers.js';
 
 export * as journal from './audit/journal.js';
+export * as replay from './audit/replay.js';
 export * as growers from './accounts/grower.js';
 export * as house from './config/house.js';
 
