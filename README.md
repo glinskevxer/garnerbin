@@ -23,6 +23,7 @@ standing at the window.
 - Holds the bin ledger, works out blends, and prints the daily position with the
   unhedged column the lender reads.
 - Marks the hedge book and works the margin call back to initial.
+- Keeps grower accounts and prints the payables book and the statements.
 - Plans rail loading against the gross rail load and the cube, whichever bites.
 
 ## Running it
@@ -37,18 +38,21 @@ A whole worked day lives in `examples/`. Every command below runs against it:
 
 ```
 npm run validate
+npm run bids
 npm run grade
 npm run settle
 npm run register
 npm run position
 npm run contracts
 npm run storage
+npm run accounts
 npm run hedge
 npm run cars
 npm run blend
 npm run exceptions
 npm run doctor
 npm run book
+npm run close
 ```
 
 ## The things worth knowing before changing anything
@@ -87,8 +91,10 @@ settlement worked out in Kansas comes out the same on a laptop set to Auckland.
 | `src/inventory`  | bins, the bin ledger, blending, the position                  |
 | `src/hedging`    | hedge lots and the margin call                                |
 | `src/loadout`    | shipping orders and rail                                      |
+| `src/accounts`   | grower accounts and the postings on them                      |
+| `src/config`     | the house file and what it refuses                            |
 | `src/io`         | csv, fixed width, the json store, the schema, importers       |
-| `src/report`     | the register, grade distribution, exceptions                  |
-| `src/audit`      | the sealed journal                                            |
+| `src/report`     | the register, grade distribution, exceptions, the season      |
+| `src/audit`      | the sealed journal and the replay that audits it              |
 | `src/cli`        | the commands                                                  |
 | `tests`          | one file per module, mirroring `src`                          |
