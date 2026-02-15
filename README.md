@@ -53,6 +53,7 @@ npm run exceptions
 npm run doctor
 npm run book
 npm run close
+npm run audit
 ```
 
 ## The things worth knowing before changing anything

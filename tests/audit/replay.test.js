@@ -100,6 +100,13 @@ describe('against the register', () => {
     expect(result.problems[0]).toContain('the register holds 9');
   });
 
+  it('does not compare money against a register that settled nothing', () => {
+    const weightsOnly = buildRegister({ day: '2025-10-09', tickets, settlements: [] });
+    const result = agreesWithRegister(replay(journal), weightsOnly);
+    expect(result.comparedMoney).toBe(false);
+    expect(result.ok).toBe(true);
+  });
+
   it('catches money that does not match', () => {
     const short = buildRegister({
       day: '2025-10-09',

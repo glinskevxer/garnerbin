@@ -96,7 +96,13 @@ export function replay(journal, { through } = {}) {
   };
 }
 
-/** Compare a replayed journal against a register built the ordinary way. */
+/**
+ * Compare a replayed journal against a register built the ordinary way.
+ *
+ * The money is only compared when the register actually carries settlements. A
+ * weights only register legitimately pays nothing, and reporting that against a
+ * journal that settled the day is a false alarm rather than a finding.
+ */
 export function agreesWithRegister(replayed, register) {
   const problems = [];
   const ticketsInJournal = replayed.commodities.reduce((sum, row) => sum + row.tickets, 0);
@@ -105,12 +111,14 @@ export function agreesWithRegister(replayed, register) {
       `the journal holds ${ticketsInJournal} tickets and the register holds ${register.totals.tickets}`
     );
   }
-  if (replayed.paidCents !== register.totals.netCents) {
+  const registerSettled = register.totals.tickets - register.totals.unsettled;
+  const comparedMoney = registerSettled > 0;
+  if (comparedMoney && replayed.paidCents !== register.totals.netCents) {
     problems.push(
       `the journal paid ${formatMoney(replayed.paidCents)} and the register paid ${formatMoney(register.totals.netCents)}`
     );
   }
-  return { ok: problems.length === 0, problems };
+  return { ok: problems.length === 0, problems, comparedMoney };
 }
 
 export function assertAgrees(replayed, register) {

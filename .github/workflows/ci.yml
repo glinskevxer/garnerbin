@@ -122,6 +122,9 @@ jobs:
       - name: close
         run: npm run close || true
 
+      - name: audit
+        run: npm run audit
+
       - name: doctor
         run: npm run doctor
 
