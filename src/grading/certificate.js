@@ -4,7 +4,6 @@ import { getCommodity } from '../commodity/registry.js';
 import { formatFactor, getFactor } from './factors.js';
 import { factorsFor, limitOf, SAMPLE_GRADE } from './standards.js';
 import { gradeSample } from './special.js';
-import { readingsOf } from './sample.js';
 
 /**
  * The inspection certificate.
@@ -13,20 +12,26 @@ import { readingsOf } from './sample.js';
  * argues from, so it prints the reading and the limit side by side. A grader
  * who has to explain a grade over the phone should be able to read the answer
  * straight off the sheet.
+ *
+ * It grades the sample once. The first version of this graded it twice, once on
+ * the readings alone and once with the condition flags folded in, and used the
+ * first answer for one field and the second for the rest. gradeSample already
+ * takes the whole sample and separates the numeric grade from the conditions
+ * that override it, so there was never anything for the second call to add.
  */
 
 export function buildCertificate(sample, { number, house, inspector, issuedOn } = {}) {
   isPlainObject(sample, 'sample');
-  const graded = gradeSample(sample.commodity, readingsOf(sample), sample);
-  const full = gradeSample(sample.commodity, { ...readingsOf(sample), ...conditionsOf(sample) });
+  const graded = gradeSample(sample.commodity, sample);
+  const binding = new Set(graded.limitingFactors.map((entry) => entry.factor));
   const rows = factorsFor(sample.commodity).map((factorId) => ({
     factor: getFactor(factorId).label,
     reading: formatFactor(factorId, sample[factorId]),
     limit:
-      full.grade === SAMPLE_GRADE
+      graded.grade === SAMPLE_GRADE
         ? 'n/a'
-        : formatFactor(factorId, limitOf(sample.commodity, full.grade, factorId)),
-    binding: full.limitingFactors.some((entry) => entry.factor === factorId) ? 'yes' : '',
+        : formatFactor(factorId, limitOf(sample.commodity, graded.grade, factorId)),
+    binding: binding.has(factorId) ? 'yes' : '',
   }));
   return {
     number: number ?? sample.id,
@@ -36,28 +41,15 @@ export function buildCertificate(sample, { number, house, inspector, issuedOn } 
     commodity: getCommodity(sample.commodity),
     sampleId: sample.id,
     grams: sample.grams,
-    grade: full.grade,
-    label: full.label,
-    specialGrades: full.specialGrades,
-    sampleGradeReasons: full.sampleGradeReasons,
-    numericGrade: graded.grade,
+    grade: graded.grade,
+    label: graded.label,
+    specialGrades: graded.specialGrades,
+    sampleGradeReasons: graded.sampleGradeReasons,
+    numericGrade: graded.numericGrade,
     rows,
     moisture: typeof sample.moisture === 'number' ? sample.moisture : null,
     dockage: typeof sample.dockage === 'number' ? sample.dockage : null,
   };
-}
-
-function conditionsOf(sample) {
-  const conditions = {};
-  for (const [key, value] of Object.entries(sample)) {
-    if (typeof value === 'boolean' || key.endsWith('Bulblets') || key.endsWith('Balls')) {
-      conditions[key] = value;
-    }
-    if (key === 'liveWeevils' || key === 'otherLiveInsects' || key === 'ergotPercent') {
-      conditions[key] = value;
-    }
-  }
-  return conditions;
 }
 
 export function renderCertificate(certificate) {

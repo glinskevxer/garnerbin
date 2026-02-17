@@ -63,6 +63,48 @@ describe('buildCertificate', () => {
     const buggy = createSample({ ...sampleFields(), liveWeevils: 3 });
     expect(buildCertificate(buggy).label).toBe('US No. 2, infested');
   });
+
+  it('keeps the numeric grade beside the grade that overrode it', () => {
+    const musty = createSample({ ...sampleFields(), musty: true });
+    const certificate = buildCertificate(musty);
+    expect(certificate.grade).toBe('sample');
+    expect(certificate.numericGrade).toBe(2);
+  });
+
+  it('marks every binding factor and no others', () => {
+    const certificate = buildCertificate(sample);
+    const marked = certificate.rows.filter((row) => row.binding === 'yes').map((row) => row.factor);
+    expect(marked).toEqual([
+      'Test weight',
+      'Damaged kernels, total',
+      'Broken corn and foreign material',
+    ]);
+  });
+
+  it('marks one factor when only one is at the grade', () => {
+    const clean = createSample({ ...sampleFields(), testWeight: 57, bcfm: 1, damagedTotal: 4.2 });
+    const marked = buildCertificate(clean)
+      .rows.filter((row) => row.binding === 'yes')
+      .map((row) => row.factor);
+    expect(marked).toEqual(['Damaged kernels, total']);
+  });
+
+  it('marks nothing binding when everything is comfortably inside', () => {
+    const clean = createSample({
+      ...sampleFields(),
+      testWeight: 58,
+      damagedTotal: 0.5,
+      heatDamaged: 0,
+      bcfm: 0.5,
+    });
+    const certificate = buildCertificate(clean);
+    expect(certificate.grade).toBe(1);
+    expect(certificate.rows.some((row) => row.binding === 'yes')).toBe(true);
+  });
+
+  it('carries the sample weight through', () => {
+    expect(buildCertificate(sample).grams).toBe(1000);
+  });
 });
 
 function sampleFields() {
