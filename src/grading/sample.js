@@ -113,11 +113,15 @@ function tryPlaces(key) {
 /**
  * Composite several probes into one sample.
  *
- * Readings are weighted by the grams behind them, counts add up, and any flag
- * set on any probe carries into the composite. A weevil found in one probe is a
- * weevil in the load.
+ * Readings are weighted, counts add up, and any flag set on any probe carries
+ * into the composite. A weevil found in one probe is a weevil in the load.
+ *
+ * The weight is the grams behind each probe by default, which is what the probe
+ * truck produces. A caller compositing whole cars into a train weights by
+ * bushels instead and passes them in, rather than writing bushels into a field
+ * called grams and hoping nobody reads it.
  */
-export function compositeSample(samples, { id, grader = null } = {}) {
+export function compositeSample(samples, { id, grader = null, weights } = {}) {
   isArray(samples, 'samples', { minLength: 1 });
   const first = samples[0];
   for (const sample of samples) {
@@ -127,20 +131,42 @@ export function compositeSample(samples, { id, grader = null } = {}) {
       });
     }
   }
-  const totalGrams = samples.reduce((sum, sample) => sum + sample.grams, 0);
+  if (weights !== undefined && weights.length !== samples.length) {
+    throw new TicketError(
+      'WEIGHTS_DO_NOT_MATCH',
+      `${weights.length} weights for ${samples.length} samples`,
+      {
+        samples: samples.length,
+        weights: weights.length,
+      }
+    );
+  }
+  const weightOf = (sample, index) => {
+    const weight = weights === undefined ? sample.grams : weights[index];
+    return positive(weight, 'weight');
+  };
+  const totalWeight = samples.reduce((sum, sample, index) => sum + weightOf(sample, index), 0);
   const composite = {
     id: id ?? `${first.id}-composite`,
     commodity: first.commodity,
     day: samples.map((sample) => sample.day).sort()[0],
-    grams: roundHalfUp(totalGrams, 2),
+    grams: roundHalfUp(
+      samples.reduce((sum, sample) => sum + sample.grams, 0),
+      2
+    ),
     grader,
   };
   for (const key of Object.keys(READING_RANGES)) {
-    const present = samples.filter((sample) => typeof sample[key] === 'number');
-    if (present.length === 0) continue;
-    const grams = present.reduce((sum, sample) => sum + sample.grams, 0);
-    const weighted = present.reduce((sum, sample) => sum + sample[key] * sample.grams, 0);
-    composite[key] = roundHalfUp(weighted / grams, tryPlaces(key));
+    let weight = 0;
+    let weighted = 0;
+    samples.forEach((sample, index) => {
+      if (typeof sample[key] !== 'number') return;
+      const share = weightOf(sample, index);
+      weight += share;
+      weighted += sample[key] * share;
+    });
+    if (weight === 0) continue;
+    composite[key] = roundHalfUp(weighted / weight, tryPlaces(key));
   }
   for (const key of COUNT_FIELDS) {
     const present = samples.filter((sample) => typeof sample[key] === 'number');
@@ -151,6 +177,7 @@ export function compositeSample(samples, { id, grader = null } = {}) {
   for (const key of FLAG_FIELDS) {
     if (samples.some((sample) => sample[key] === true)) composite[key] = true;
   }
+  composite.compositeWeight = roundHalfUp(totalWeight, 2);
   return Object.freeze(composite);
 }
 

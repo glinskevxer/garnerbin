@@ -116,4 +116,26 @@ describe('compositeSample', () => {
   it('refuses an empty list', () => {
     expect(() => compositeSample([])).toThrow(/at least 1/);
   });
+
+  it('weights by something other than grams when told to', () => {
+    const composite = compositeSample([heavy, light], { weights: [1, 3] });
+    expect(composite.testWeight).toBe(53);
+    expect(composite.compositeWeight).toBe(4);
+  });
+
+  it('still reports the grams behind it when weighting by something else', () => {
+    const composite = compositeSample([heavy, light], { weights: [1, 1] });
+    expect(composite.grams).toBe(2000);
+    expect(composite.testWeight).toBe(54);
+  });
+
+  it('refuses a weight list that does not match the samples', () => {
+    expect(() => compositeSample([heavy, light], { weights: [1] })).toThrow(
+      /1 weights for 2 samples/
+    );
+  });
+
+  it('refuses a weight of nothing', () => {
+    expect(() => compositeSample([heavy, light], { weights: [1, 0] })).toThrow(/greater than zero/);
+  });
 });

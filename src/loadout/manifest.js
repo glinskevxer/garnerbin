@@ -43,10 +43,13 @@ export function buildManifest(input) {
     );
   }
 
-  const weighted = cars.map((car) =>
-    Object.freeze({ ...car.sample, grams: car.bushels, id: car.car })
+  const composite = compositeSample(
+    cars.map((car) => car.sample),
+    {
+      id: `${input.number ?? order.number}-composite`,
+      weights: cars.map((car) => car.bushels),
+    }
   );
-  const composite = compositeSample(weighted, { id: `${input.number ?? order.number}-composite` });
   const graded = gradeSample(order.commodity, composite);
   const check = checkAgainstSpec(order, composite);
 
