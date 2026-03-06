@@ -4,7 +4,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { formatMoney } from '../../src/core/money.js';
-import { bidFor, runSettle, settlementCsv } from '../../src/cli/settle.js';
+import { bidFor } from '../../src/cli/options.js';
+import { runSettle, settlementCsv } from '../../src/cli/settle.js';
 
 const example = (name) => fileURLToPath(new URL(`../../examples/${name}`, import.meta.url));
 

@@ -3,7 +3,7 @@ import { ConfigError } from '../core/errors.js';
 import { bushelsFromDecimal } from '../core/money.js';
 import { closeDay, needsAttention, renderClose } from '../report/dailyclose.js';
 import { settleDay } from '../settlement/day.js';
-import { bidFor } from './settle.js';
+import { addBidOptions, addDeskOptions, bidFor, wantsSettlement } from './options.js';
 import { assertClean, readHouse, readSamples, readTickets } from './desk.js';
 
 /**
@@ -23,7 +23,7 @@ export function runClose(options) {
   }
 
   let settlements = [];
-  if (options.samples && (options.bid || options.board)) {
+  if (wantsSettlement(options)) {
     const samples = assertClean(readSamples(options.samples), 'sample');
     settlements = settleDay({
       house,
@@ -59,17 +59,11 @@ export function runClose(options) {
 }
 
 export function register(program) {
-  program
+  const command = program
     .command('close')
-    .description('settle, foot and seal a day before the office locks up')
-    .requiredOption('-c, --house <path>', 'the house configuration file')
-    .requiredOption('-t, --tickets <path>', 'a scale ticket extract')
-    .option('-s, --samples <path>', 'a sample extract, needed to settle')
-    .option('-b, --bid <price>', 'the posted bid, such as 4.2750')
-    .option('--board <path>', 'a settlement board file')
-    .option('--basis <path>', 'a basis board file')
-    .option('--period <period>', 'the delivery period on the basis board')
-    .option('-d, --day <day>', 'the day to close, defaults to the first in the file')
+    .description('settle, foot and seal a day before the office locks up');
+  addDeskOptions(command);
+  addBidOptions(command)
     .option('--opening <bushels>', 'what was in the house this morning')
     .option('--measured <bushels>', 'what the bins measured tonight')
     .option('-o, --out <path>', 'write the sealed journal to a file')

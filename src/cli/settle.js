@@ -1,38 +1,20 @@
 import { writeFileSync } from 'node:fs';
 import { ConfigError } from '../core/errors.js';
-import { parsePrice, formatBushels, formatMoney, formatPrice } from '../core/money.js';
+import { formatBushels, formatMoney, formatPrice } from '../core/money.js';
 import { heading, keyValue, renderTable } from '../core/text.js';
 import { settleAgainstHouse } from '../settlement/day.js';
 import { statementFor } from '../settlement/statement.js';
-import { bidFrom } from '../pricing/basis.js';
-import { quoteFor } from '../pricing/basisbook.js';
-import { settleOf } from '../pricing/quotes.js';
 import { toCsv } from '../io/csv.js';
 import { sampleForTicket, sampleIndex } from '../grading/sample.js';
-import { assertClean, readBasis, readBoard, readHouse, readSamples, readTickets } from './desk.js';
+import { addBidOptions, addDeskOptions, bidFor } from './options.js';
+import { assertClean, readHouse, readSamples, readTickets } from './desk.js';
 
 /**
  * Settle the inbound loads on a day.
  *
- * The bid can be given straight or worked out from the board and the basis. It
- * is worth having both: the straight bid is what the office does when the desk
- * has already posted a number, and the board plus basis is what it does when it
- * has not, and having only the first is how a day gets settled against
- * yesterday's board.
+ * The bid comes from options.js, which takes it either as a posted number or as
+ * a board and a basis and a period.
  */
-
-export function bidFor(options, commodity) {
-  if (options.bid) return parsePrice(options.bid);
-  if (!options.board || !options.basis || !options.period) {
-    throw new ConfigError('NO_BID', 'give a bid, or a board and a basis and a period', {
-      commodity,
-    });
-  }
-  const board = readBoard(options.board, options.day);
-  const book = readBasis(options.basis, { house: 'desk', day: options.day });
-  const quote = quoteFor(book, commodity, options.period);
-  return bidFrom(book.boards[commodity], options.period, settleOf(board, quote.contract));
-}
 
 export function runSettle(options) {
   const house = readHouse(options.house);
@@ -131,17 +113,9 @@ export function settlementCsv(settlements) {
 }
 
 export function register(program) {
-  program
-    .command('settle')
-    .description('settle the inbound loads on a day')
-    .requiredOption('-c, --house <path>', 'the house configuration file')
-    .requiredOption('-t, --tickets <path>', 'a scale ticket extract')
-    .requiredOption('-s, --samples <path>', 'a sample extract')
-    .option('-b, --bid <price>', 'the posted bid, such as 4.2750')
-    .option('--board <path>', 'a settlement board file')
-    .option('--basis <path>', 'a basis board file')
-    .option('--period <period>', 'the delivery period on the basis board, such as 2025-10')
-    .option('-d, --day <day>', 'the day the boards are for', '2025-10-09')
+  const command = program.command('settle').description('settle the inbound loads on a day');
+  addDeskOptions(command);
+  addBidOptions(command)
     .option('--ticket <number>', 'print the full statement for one ticket')
     .option('--commodity <id>', 'only this commodity')
     .option('-o, --out <path>', 'write the settlements to a csv')

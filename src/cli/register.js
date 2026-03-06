@@ -2,7 +2,7 @@ import { writeFileSync } from 'node:fs';
 import { ConfigError } from '../core/errors.js';
 import { buildRegister, registerCsv, renderRegister } from '../report/register.js';
 import { settleDay } from '../settlement/day.js';
-import { bidFor } from './settle.js';
+import { addBidOptions, addDeskOptions, bidFor, wantsSettlement } from './options.js';
 import { assertClean, readHouse, readSamples, readTickets } from './desk.js';
 
 /**
@@ -24,7 +24,7 @@ export function runRegister(options) {
   const onDay = tickets.filter((ticket) => ticket.day === day);
 
   let settlements = [];
-  if (options.samples && (options.bid || options.board)) {
+  if (wantsSettlement(options)) {
     const samples = assertClean(readSamples(options.samples), 'sample');
     settlements = settleDay({
       house,
@@ -41,17 +41,11 @@ export function runRegister(options) {
 }
 
 export function register(program) {
-  program
+  const command = program
     .command('register')
-    .description('print the ticket register for a day, settled or not')
-    .requiredOption('-c, --house <path>', 'the house configuration file')
-    .requiredOption('-t, --tickets <path>', 'a scale ticket extract')
-    .option('-s, --samples <path>', 'a sample extract, needed to settle')
-    .option('-b, --bid <price>', 'the posted bid, such as 4.2750')
-    .option('--board <path>', 'a settlement board file')
-    .option('--basis <path>', 'a basis board file')
-    .option('--period <period>', 'the delivery period on the basis board')
-    .option('-d, --day <day>', 'the day to print, defaults to the first in the file')
+    .description('print the ticket register for a day, settled or not');
+  addDeskOptions(command);
+  addBidOptions(command)
     .option('-o, --out <path>', 'write the register to a csv')
     .action((options) => {
       console.log(runRegister(options).text);
