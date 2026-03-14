@@ -8,6 +8,10 @@ import { grossBushelsOf } from '../weights/ticket.js';
 /**
  * The scale ticket register.
  *
+ * Only inbound tickets count toward the unsettled figure. An outbound car is a
+ * shipment, not a purchase, and counting it as unsettled left the close command
+ * refusing to sign off every day that shipped anything.
+ *
  * One line a ticket, in the order they crossed the scale, and it has to foot.
  * The office ties this to the pit tape every evening, so the totals at the
  * bottom are the point of the report and the detail above them is only there to
@@ -59,7 +63,8 @@ function totalsOf(rows) {
     grossBushels: add(inbound, 'grossBushels'),
     settlementBushels: add(inbound, 'settlementBushels'),
     netCents: add(rows, 'netCents'),
-    unsettled: rows.filter((row) => row.netCents === null).length,
+    unsettled: inbound.filter((row) => row.netCents === null).length,
+    settled: rows.filter((row) => row.netCents !== null).length,
   };
 }
 

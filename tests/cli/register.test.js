@@ -36,7 +36,7 @@ describe('the register without settlements', () => {
 
   it('leaves the money columns empty', () => {
     expect(result.register.totals.netCents).toBe(0);
-    expect(result.register.totals.unsettled).toBe(8);
+    expect(result.register.totals.unsettled).toBe(7);
   });
 
   it('separates the outbound car', () => {
@@ -53,7 +53,7 @@ describe('the register with settlements', () => {
   });
 
   it('settles as it goes', () => {
-    expect(result.register.totals.unsettled).toBe(1);
+    expect(result.register.totals.unsettled).toBe(0);
     expect(result.register.totals.netCents).toBeGreaterThan(0);
   });
 

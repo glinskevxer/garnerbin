@@ -84,7 +84,7 @@ jobs:
         run: npm run validate
 
       - name: bids
-        run: npm run bids || true
+        run: npm run bids
 
       - name: grade
         run: npm run grade
@@ -120,7 +120,7 @@ jobs:
         run: npm run accounts
 
       - name: close
-        run: npm run close || true
+        run: npm run close
 
       - name: audit
         run: npm run audit

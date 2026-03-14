@@ -70,8 +70,22 @@ describe('buildRegister', () => {
     expect(formatBushels(register.totals.grossBushels)).toBe('1,800.00');
   });
 
-  it('counts what is still unsettled', () => {
-    expect(register.totals.unsettled).toBe(2);
+  it('counts what is still unsettled, inbound only', () => {
+    expect(register.totals.unsettled).toBe(1);
+  });
+
+  it('counts the settlements it did carry', () => {
+    expect(register.totals.settled).toBe(1);
+  });
+
+  it('does not count an outbound car as unsettled', () => {
+    const outboundOnly = buildRegister({
+      day: '2025-10-09',
+      tickets: [ticket('T-2000', { direction: 'out' })],
+      settlements: [],
+    });
+    expect(outboundOnly.totals.tickets).toBe(1);
+    expect(outboundOnly.totals.unsettled).toBe(0);
   });
 
   it('refuses a day it cannot read', () => {

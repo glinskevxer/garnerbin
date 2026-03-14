@@ -64,7 +64,7 @@ describe('closing a day', () => {
 
   it('knows it does not foot with tickets unsettled', () => {
     expect(close.foots).toBe(false);
-    expect(needsAttention(close)).toContain('2 tickets are not settled');
+    expect(needsAttention(close)).toContain('1 tickets are not settled');
   });
 
   it('leaves the reconciliation out when nobody measured', () => {

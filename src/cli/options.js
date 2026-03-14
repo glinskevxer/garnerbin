@@ -42,6 +42,12 @@ export function bidFor(options, commodity) {
       commodity,
     });
   }
+  if (!options.day) {
+    throw new ConfigError('NO_BOARD_DAY', 'a board and a basis need the day they are for', {
+      commodity,
+      board: options.board,
+    });
+  }
   const board = readBoard(options.board, options.day);
   const book = readBasis(options.basis, { house: 'desk', day: options.day });
   const quote = quoteFor(book, commodity, options.period);

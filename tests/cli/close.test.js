@@ -29,8 +29,8 @@ describe('closing the worked day', () => {
   const result = runClose(base);
 
   it('settles every inbound load', () => {
-    expect(result.close.register.totals.unsettled).toBe(1);
-    expect(result.close.foots).toBe(false);
+    expect(result.close.register.totals.unsettled).toBe(0);
+    expect(result.close.foots).toBe(true);
   });
 
   it('splits the day by commodity', () => {
@@ -43,9 +43,15 @@ describe('closing the worked day', () => {
     expect(verifyJournal(result.close.journal).ok).toBe(true);
   });
 
-  it('says what is still open', () => {
-    expect(result.attention).toContain('1 tickets are not settled');
-    expect(result.text).toContain('Before this day is closed');
+  it('has nothing left open on a fully settled day', () => {
+    expect(result.attention).toEqual([]);
+    expect(result.text).toContain('Nothing needs looking at');
+  });
+
+  it('says what is open when the samples are missing', () => {
+    const weightsOnly = runClose({ house: base.house, tickets: base.tickets });
+    expect(weightsOnly.attention).toContain('7 tickets are not settled');
+    expect(weightsOnly.text).toContain('Before this day is closed');
   });
 
   it('leaves the reconciliation out when nothing was measured', () => {

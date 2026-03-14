@@ -111,8 +111,7 @@ export function agreesWithRegister(replayed, register) {
       `the journal holds ${ticketsInJournal} tickets and the register holds ${register.totals.tickets}`
     );
   }
-  const registerSettled = register.totals.tickets - register.totals.unsettled;
-  const comparedMoney = registerSettled > 0;
+  const comparedMoney = register.totals.settled > 0;
   if (comparedMoney && replayed.paidCents !== register.totals.netCents) {
     problems.push(
       `the journal paid ${formatMoney(replayed.paidCents)} and the register paid ${formatMoney(register.totals.netCents)}`
