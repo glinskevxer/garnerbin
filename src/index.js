@@ -91,6 +91,7 @@ export * as house from './config/house.js';
 
 export * as register from './report/register.js';
 export * as grades from './report/grades.js';
+export * as hauler from './report/hauler.js';
 export * as seasonal from './report/seasonal.js';
 export * as dailyclose from './report/dailyclose.js';
 export * as exceptions from './report/exceptions.js';
