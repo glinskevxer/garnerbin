@@ -1,0 +1,21 @@
+{
+  "day": "2025-10-09",
+  "pit": {
+    "pits": 1,
+    "unloadBushelsPerHour": 6000,
+    "turnaroundMinutes": 4,
+    "dryerBushelsPerHour": 4500
+  },
+  "arrivals": [
+    { "truck": "T-10441", "arrivesAt": 0, "bushels": 90071 },
+    { "truck": "T-10442", "arrivesAt": 6, "bushels": 91321 },
+    { "truck": "T-10443", "arrivesAt": 14, "bushels": 54964 },
+    { "truck": "T-10444", "arrivesAt": 18, "bushels": 90178 },
+    { "truck": "T-10445", "arrivesAt": 25, "bushels": 82000 },
+    { "truck": "T-10446", "arrivesAt": 31, "bushels": 91250 },
+    { "truck": "T-10447", "arrivesAt": 33, "bushels": 89785 },
+    { "truck": "T-10450", "arrivesAt": 45, "bushels": 90000 },
+    { "truck": "T-10451", "arrivesAt": 52, "bushels": 88500 },
+    { "truck": "T-10452", "arrivesAt": 58, "bushels": 91000 }
+  ]
+}

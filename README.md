@@ -48,6 +48,7 @@ npm run storage
 npm run accounts
 npm run hedge
 npm run cars
+npm run queue
 npm run blend
 npm run exceptions
 npm run doctor

@@ -36,6 +36,7 @@ describe('the program', () => {
       'grade',
       'hedge',
       'position',
+      'queue',
       'register',
       'settle',
       'storage',

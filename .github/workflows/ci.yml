@@ -107,6 +107,9 @@ jobs:
       - name: hedge
         run: npm run hedge
 
+      - name: queue
+        run: npm run queue
+
       - name: cars
         run: npm run cars
 
