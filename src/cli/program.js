@@ -11,6 +11,7 @@ import { register as registerContracts } from './contracts.js';
 import { register as registerDoctor } from './doctor.js';
 import { register as registerExceptions } from './exceptions.js';
 import { register as registerGrade } from './grade.js';
+import { register as registerHaulers } from './haulers.js';
 import { register as registerHedge } from './hedge.js';
 import { register as registerPosition } from './position.js';
 import { register as registerQueue } from './queue.js';
@@ -54,6 +55,7 @@ export function buildProgram(version) {
   registerBids(program);
   registerAudit(program);
   registerQueue(program);
+  registerHaulers(program);
   return program;
 }
 

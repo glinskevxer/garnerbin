@@ -34,6 +34,7 @@ describe('the program', () => {
       'doctor',
       'exceptions',
       'grade',
+      'haulers',
       'hedge',
       'position',
       'queue',
