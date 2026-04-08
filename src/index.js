@@ -67,6 +67,7 @@ export * as blend from './inventory/blend.js';
 export * as grainbank from './inventory/grainbank.js';
 export * as temperature from './inventory/temperature.js';
 export * as position from './inventory/position.js';
+export * as space from './inventory/space.js';
 export * as dpr from './inventory/dpr.js';
 
 export * as hedge from './hedging/hedge.js';
