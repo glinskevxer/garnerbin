@@ -19,8 +19,21 @@ const COMMAND_SCRIPTS = Object.entries(manifest.scripts).filter(([, script]) =>
   script.includes('bin/garnerbin.js')
 );
 
+/**
+ * A command that found something to report exits one on purpose: space when
+ * there is not enough room, exceptions when there is a stop. That is a finding
+ * and not a failure, so the exit code is checked rather than thrown on. Two
+ * means a coded error came out and nothing was printed, which is a failure.
+ */
 function run(args) {
-  return execFileSync(process.execPath, args, { cwd: root, encoding: 'utf8', shell: false });
+  try {
+    return {
+      output: execFileSync(process.execPath, args, { cwd: root, encoding: 'utf8' }),
+      code: 0,
+    };
+  } catch (error) {
+    return { output: `${error.stdout ?? ''}${error.stderr ?? ''}`, code: error.status };
+  }
 }
 
 describe('every command script', () => {
@@ -36,7 +49,9 @@ describe('every command script', () => {
         const parts = invocation.trim().split(/\s+/);
         expect(parts[0]).toBe('node');
         expect(parts[1]).toBe('bin/garnerbin.js');
-        output += run(parts.slice(1));
+        const result = run(parts.slice(1));
+        expect(result.code, `${name} exited ${result.code}`).toBeLessThan(2);
+        output += result.output;
       }
       expect(output.length).toBeGreaterThan(20);
       expect(output).not.toContain('undefined');

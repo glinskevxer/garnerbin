@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { ConfigError } from '../core/errors.js';
 import { isString } from '../core/assert.js';
-import { loadHouse } from '../config/house.js';
+import { binOf, loadHouse } from '../config/house.js';
 import {
   importBasisBook,
   importQuoteBoard,
@@ -38,6 +38,8 @@ export function readJsonFile(path, what) {
     throw new ConfigError('BAD_JSON_FILE', `${path} is not valid json: ${error.message}`, { path });
   }
 }
+
+export { binOf };
 
 export function readHouse(path) {
   return loadHouse(readJsonFile(path, 'house file'));

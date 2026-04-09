@@ -40,6 +40,7 @@ describe('the program', () => {
       'queue',
       'register',
       'settle',
+      'space',
       'storage',
       'validate',
     ]);

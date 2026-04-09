@@ -45,6 +45,7 @@ npm run register
 npm run position
 npm run haulers
 npm run contracts
+npm run space
 npm run storage
 npm run accounts
 npm run hedge

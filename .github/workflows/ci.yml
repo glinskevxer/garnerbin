@@ -101,6 +101,9 @@ jobs:
       - name: contracts
         run: npm run contracts
 
+      - name: space
+        run: npm run space || true
+
       - name: storage
         run: npm run storage
 

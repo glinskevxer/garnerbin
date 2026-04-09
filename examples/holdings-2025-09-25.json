@@ -1,0 +1,14 @@
+{
+  "day": "2025-09-25",
+  "holdings": [
+    { "bin": "B-1", "bushels": 1200000, "commodity": "corn" },
+    { "bin": "B-2", "bushels": 0, "commodity": null },
+    { "bin": "B-3", "bushels": 2600000, "commodity": "soybeans" },
+    { "bin": "B-4", "bushels": 400000, "commodity": "corn" },
+    { "bin": "F-1", "bushels": 14200000, "commodity": "hrw" }
+  ],
+  "expected": {
+    "corn": 22000000,
+    "soybeans": 3000000
+  }
+}

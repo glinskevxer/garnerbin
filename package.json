@@ -43,6 +43,7 @@
     "queue": "node bin/garnerbin.js queue -f examples/arrivals-2025-10-09.json",
     "register": "node bin/garnerbin.js register -c examples/rush-creek.json -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv -b 4.2750",
     "settle": "node bin/garnerbin.js settle -c examples/rush-creek.json -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv --board examples/board-2025-10-09.csv --basis examples/basis-2025-10-09.csv --period 2025-10 -d 2025-10-09",
+    "space": "node bin/garnerbin.js space -c examples/rush-creek.json -f examples/holdings-2025-09-25.json --daily 45000",
     "storage": "node bin/garnerbin.js storage -c examples/rush-creek.json -f examples/lots-2026-03-01.json",
     "test": "vitest run",
     "test:watch": "vitest",

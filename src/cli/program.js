@@ -17,6 +17,7 @@ import { register as registerPosition } from './position.js';
 import { register as registerQueue } from './queue.js';
 import { register as registerRegister } from './register.js';
 import { register as registerSettle } from './settle.js';
+import { register as registerSpace } from './space.js';
 import { register as registerStorage } from './storage.js';
 import { register as registerValidate } from './validate.js';
 
@@ -56,6 +57,7 @@ export function buildProgram(version) {
   registerAudit(program);
   registerQueue(program);
   registerHaulers(program);
+  registerSpace(program);
   return program;
 }
 
