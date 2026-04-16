@@ -1,10 +1,9 @@
-import { writeFileSync } from 'node:fs';
 import { ConfigError } from '../core/errors.js';
 import { bushelsFromDecimal } from '../core/money.js';
 import { closeDay, needsAttention, renderClose } from '../report/dailyclose.js';
 import { settleDay } from '../settlement/day.js';
 import { addBidOptions, addDeskOptions, bidFor, wantsSettlement } from './options.js';
-import { assertClean, readHouse, readSamples, readTickets } from './desk.js';
+import { assertClean, readHouse, readSamples, readTickets, writeOut } from './desk.js';
 
 /**
  * Close the day.
@@ -52,9 +51,7 @@ export function runClose(options) {
     lines.push('', 'Before this day is closed:', ...attention.map((reason) => `  ${reason}`));
   }
 
-  if (options.out) {
-    writeFileSync(options.out, `${JSON.stringify(close.journal, null, 2)}\n`, 'utf8');
-  }
+  if (options.out) writeOut(options.out, `${JSON.stringify(close.journal, null, 2)}\n`, 'journal');
   return { close, attention, text: lines.join('\n') };
 }
 

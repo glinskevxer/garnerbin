@@ -1,9 +1,8 @@
-import { writeFileSync } from 'node:fs';
 import { formatPrice } from '../core/money.js';
 import { formatBasis } from '../pricing/basis.js';
 import { buildBidSheet, renderBidSheet } from '../pricing/bidsheet.js';
 import { toCsv } from '../io/csv.js';
-import { readBasis, readBoard, readHouse } from './desk.js';
+import { readBasis, readBoard, readHouse, writeOut } from './desk.js';
 
 /**
  * Print the bid sheet.
@@ -28,7 +27,7 @@ export function runBids(options) {
     basis,
     commodities: options.commodity ? [options.commodity] : house?.commodities,
   });
-  if (options.out) writeFileSync(options.out, bidsCsv(sheet), 'utf8');
+  if (options.out) writeOut(options.out, bidsCsv(sheet), 'bid sheet');
   return { sheet, text: renderBidSheet(sheet) };
 }
 

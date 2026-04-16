@@ -1,9 +1,8 @@
-import { writeFileSync } from 'node:fs';
 import { ConfigError } from '../core/errors.js';
 import { buildRegister, registerCsv, renderRegister } from '../report/register.js';
 import { settleDay } from '../settlement/day.js';
 import { addBidOptions, addDeskOptions, bidFor, wantsSettlement } from './options.js';
-import { assertClean, readHouse, readSamples, readTickets } from './desk.js';
+import { assertClean, readHouse, readSamples, readTickets, writeOut } from './desk.js';
 
 /**
  * The daily ticket register.
@@ -36,7 +35,7 @@ export function runRegister(options) {
   }
 
   const register = buildRegister({ day, house: house.name, tickets: onDay, settlements });
-  if (options.out) writeFileSync(options.out, registerCsv(register), 'utf8');
+  if (options.out) writeOut(options.out, registerCsv(register), 'register');
   return { register, text: renderRegister(register) };
 }
 

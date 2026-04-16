@@ -1,11 +1,10 @@
-import { writeFileSync } from 'node:fs';
 import { formatBushels, formatMoney } from '../core/money.js';
 import { heading, keyValue } from '../core/text.js';
 import { appendAll, openJournal, verifyJournal } from '../audit/journal.js';
 import { settleDay } from '../settlement/day.js';
 import { grossBushelsOf } from '../weights/ticket.js';
 import { addBidOptions, addDeskOptions, bidFor } from './options.js';
-import { assertClean, readHouse, readSamples, readTickets } from './desk.js';
+import { assertClean, readHouse, readSamples, readTickets, writeOut } from './desk.js';
 
 /**
  * Book a day into the audit journal.
@@ -83,7 +82,7 @@ export function runBook(options) {
     `The journal seals to ${journal.head}`,
   ].join('\n');
 
-  if (options.out) writeFileSync(options.out, `${JSON.stringify(journal, null, 2)}\n`, 'utf8');
+  if (options.out) writeOut(options.out, `${JSON.stringify(journal, null, 2)}\n`, 'journal');
   return { journal, sound, text };
 }
 

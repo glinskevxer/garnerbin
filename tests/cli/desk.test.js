@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { fileURLToPath } from 'node:url';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import {
   assertClean,
   binOf,
@@ -10,6 +13,7 @@ import {
   readSamples,
   readText,
   readTickets,
+  writeOut,
 } from '../../src/cli/desk.js';
 
 const example = (name) => fileURLToPath(new URL(`../../examples/${name}`, import.meta.url));
@@ -67,6 +71,25 @@ describe('refusing a dirty import', () => {
     } catch (err) {
       expect(err.code).toBe('IMPORT_HAS_PROBLEMS');
       expect(err.details.problems[0]).toBe('row 2: tare is over gross');
+    }
+  });
+});
+
+describe('writing an output file', () => {
+  it('writes the file and makes the directory on the way', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'garnerbin-desk-'));
+    const path = join(directory, 'deep', 'down', 'out.csv');
+    expect(writeOut(path, 'a,b\n1,2\n', 'register')).toBe(path);
+    expect(await readFile(path, 'utf8')).toBe('a,b\n1,2\n');
+    await rm(directory, { recursive: true, force: true });
+  });
+
+  it('names the command output and the path when it cannot write', () => {
+    try {
+      writeOut(join(example('rush-creek.json'), 'out.csv'), 'x', 'register');
+    } catch (err) {
+      expect(err.code).toBe('CANNOT_WRITE');
+      expect(err.message).toContain('cannot write the register to');
     }
   });
 });

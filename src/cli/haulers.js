@@ -1,10 +1,9 @@
-import { writeFileSync } from 'node:fs';
 import { formatBushels, formatMoney } from '../core/money.js';
 import { toCsv } from '../io/csv.js';
 import { busiest, haulerSummary, renderHaulers, wetterThanAverage } from '../report/hauler.js';
 import { settleDay } from '../settlement/day.js';
 import { addBidOptions, addDeskOptions, bidFor, wantsSettlement } from './options.js';
-import { assertClean, readHouse, readSamples, readTickets } from './desk.js';
+import { assertClean, readHouse, readSamples, readTickets, writeOut } from './desk.js';
 
 /**
  * Who hauled what, and who is running wet.
@@ -50,7 +49,7 @@ export function runHaulers(options) {
       .join(', ')}`
   );
 
-  if (options.out) writeFileSync(options.out, haulersCsv(rows), 'utf8');
+  if (options.out) writeOut(options.out, haulersCsv(rows), 'hauler summary');
   return { rows, wet, text: parts.join('\n') };
 }
 

@@ -1,4 +1,3 @@
-import { writeFileSync } from 'node:fs';
 import { ConfigError } from '../core/errors.js';
 import { formatBushels, formatMoney, formatPrice } from '../core/money.js';
 import { heading, keyValue, renderTable } from '../core/text.js';
@@ -7,7 +6,7 @@ import { statementFor } from '../settlement/statement.js';
 import { toCsv } from '../io/csv.js';
 import { sampleForTicket, sampleIndex } from '../grading/sample.js';
 import { addBidOptions, addDeskOptions, bidFor } from './options.js';
-import { assertClean, readHouse, readSamples, readTickets } from './desk.js';
+import { assertClean, readHouse, readSamples, readTickets, writeOut } from './desk.js';
 
 /**
  * Settle the inbound loads on a day.
@@ -93,7 +92,7 @@ export function runSettle(options) {
     ]),
   ].join('\n');
 
-  if (options.out) writeFileSync(options.out, settlementCsv(settlements), 'utf8');
+  if (options.out) writeOut(options.out, settlementCsv(settlements), 'settlements');
   return { settlements, totals, text };
 }
 

@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { ConfigError } from '../core/errors.js';
 import { isString } from '../core/assert.js';
 import { binOf, loadHouse } from '../config/house.js';
@@ -71,4 +72,26 @@ export function assertClean(result, what) {
     });
   }
   return result.records;
+}
+
+/**
+ * Write a command's output file.
+ *
+ * Seven commands took an --out path and each one called writeFileSync itself.
+ * None of them made the directory first, so pointing one at a path under a
+ * folder that did not exist failed with a bare ENOENT and no mention of which
+ * command or which file.
+ */
+export function writeOut(path, contents, what = 'output') {
+  isString(path, 'path');
+  try {
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, contents, 'utf8');
+  } catch (error) {
+    throw new ConfigError('CANNOT_WRITE', `cannot write the ${what} to ${path}: ${error.message}`, {
+      path,
+      what,
+    });
+  }
+  return path;
 }

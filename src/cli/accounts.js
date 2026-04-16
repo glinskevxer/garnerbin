@@ -1,4 +1,3 @@
-import { writeFileSync } from 'node:fs';
 import { ConfigError } from '../core/errors.js';
 import { heading, keyValue } from '../core/text.js';
 import { createAccount, openLedger, postAll } from '../accounts/grower.js';
@@ -9,7 +8,7 @@ import {
   renderPayables,
   statementCsv,
 } from '../report/growerstatement.js';
-import { readJsonFile } from './desk.js';
+import { readJsonFile, writeOut } from './desk.js';
 
 /**
  * Grower accounts, from the file the office keeps them in.
@@ -71,7 +70,7 @@ export function runAccounts(options) {
       to: options.to ?? days.at(-1) ?? '2025-12-31',
       house: options.houseName ?? 'Rush Creek Grain',
     });
-    if (options.out) writeFileSync(options.out, statementCsv(statement), 'utf8');
+    if (options.out) writeOut(options.out, statementCsv(statement), 'statement');
     return { statement, text: renderGrowerStatement(statement) };
   }
 
