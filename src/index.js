@@ -95,5 +95,6 @@ export * as grades from './report/grades.js';
 export * as hauler from './report/hauler.js';
 export * as seasonal from './report/seasonal.js';
 export * as dailyclose from './report/dailyclose.js';
+export * as columns from './report/columns.js';
 export * as exceptions from './report/exceptions.js';
 export * as growerstatement from './report/growerstatement.js';

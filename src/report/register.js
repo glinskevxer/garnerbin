@@ -1,6 +1,7 @@
 import { isArray, isPlainObject } from '../core/assert.js';
 import { assertDay } from '../core/dates.js';
 import { formatBushels, formatMoney } from '../core/money.js';
+import { bushelColumn, moneyColumn, textColumn } from './columns.js';
 import { heading, keyValue, renderTable } from '../core/text.js';
 import { toCsv } from '../io/csv.js';
 import { grossBushelsOf } from '../weights/ticket.js';
@@ -69,23 +70,15 @@ function totalsOf(rows) {
 }
 
 const COLUMNS = [
-  { header: 'ticket', key: 'ticket' },
-  { header: 'way', key: 'direction' },
-  { header: 'account', key: 'account' },
-  { header: 'grain', key: 'commodity' },
-  { header: 'net lb', value: (row) => row.netPounds.toLocaleString('en-US'), align: 'right' },
-  { header: 'gross bu', value: (row) => formatBushels(row.grossBushels), align: 'right' },
-  {
-    header: 'settled bu',
-    value: (row) => (row.settlementBushels === null ? '' : formatBushels(row.settlementBushels)),
-    align: 'right',
-  },
-  { header: 'grade', key: 'grade' },
-  {
-    header: 'net',
-    value: (row) => (row.netCents === null ? '' : formatMoney(row.netCents)),
-    align: 'right',
-  },
+  textColumn('ticket', 'ticket'),
+  textColumn('way', 'direction'),
+  textColumn('account', 'account'),
+  textColumn('grain', 'commodity'),
+  textColumn('net lb', (row) => row.netPounds.toLocaleString('en-US'), { align: 'right' }),
+  bushelColumn('gross bu', 'grossBushels'),
+  bushelColumn('settled bu', 'settlementBushels'),
+  textColumn('grade', 'grade'),
+  moneyColumn('net', 'netCents'),
 ];
 
 export function renderRegister(register) {

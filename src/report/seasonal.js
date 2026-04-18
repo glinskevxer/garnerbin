@@ -3,6 +3,7 @@ import { percentOf, roundHalfUp } from '../core/numbers.js';
 import { bushelsToDecimal, formatBushels, formatMoney, formatPrice } from '../core/money.js';
 import { cropYear, monthKey } from '../core/dates.js';
 import { heading, keyValue, renderTable } from '../core/text.js';
+import { bushelColumn, numberColumn, textColumn } from './columns.js';
 import { cropYearStartMonth } from '../commodity/registry.js';
 import { SAMPLE_GRADE } from '../grading/standards.js';
 
@@ -101,19 +102,19 @@ export function renderSeason(season) {
     '',
     renderTable(
       [
-        { header: 'month', key: 'month' },
-        { header: 'loads', key: 'loads', align: 'right' },
-        { header: 'gross', value: (row) => formatBushels(row.grossBushels), align: 'right' },
-        { header: 'settled', value: (row) => formatBushels(row.netBushels), align: 'right' },
+        textColumn('month', 'month'),
+        numberColumn('loads', 'loads'),
+        bushelColumn('gross', 'grossBushels'),
+        bushelColumn('settled', 'netBushels'),
       ],
       season.months
     ),
     '',
     renderTable(
       [
-        { header: 'grade', key: 'label' },
-        { header: 'bushels', value: (row) => formatBushels(row.bushels), align: 'right' },
-        { header: 'share', value: (row) => `${row.share}`, align: 'right' },
+        textColumn('grade', 'label'),
+        bushelColumn('bushels', 'bushels'),
+        numberColumn('share', 'share', { places: 1 }),
       ],
       season.grades
     ),

@@ -1,7 +1,8 @@
 import { isArray } from '../core/assert.js';
 import { percentOf, roundHalfUp } from '../core/numbers.js';
-import { bushelsToDecimal, formatBushels, formatMoney } from '../core/money.js';
+import { bushelsToDecimal } from '../core/money.js';
 import { heading, renderTable } from '../core/text.js';
+import { bushelColumn, moneyColumn, numberColumn, textColumn } from './columns.js';
 import { grossBushelsOf, isInbound } from '../weights/ticket.js';
 
 /**
@@ -101,25 +102,13 @@ export function renderHaulers(rows, { house = 'unnamed house' } = {}) {
     '',
     renderTable(
       [
-        { header: 'hauler', key: 'hauler' },
-        { header: 'loads', key: 'loads', align: 'right' },
-        { header: 'gross', value: (row) => formatBushels(row.grossBushels), align: 'right' },
-        { header: 'average load', value: (row) => formatBushels(row.averageLoad), align: 'right' },
-        {
-          header: 'moisture',
-          value: (row) => (row.averageMoisture === null ? '' : row.averageMoisture.toFixed(1)),
-          align: 'right',
-        },
-        {
-          header: 'shrink pct',
-          value: (row) => (row.shrinkPercent === null ? '' : row.shrinkPercent.toFixed(2)),
-          align: 'right',
-        },
-        {
-          header: 'paid',
-          value: (row) => (row.settled === 0 ? '' : formatMoney(row.netCents)),
-          align: 'right',
-        },
+        textColumn('hauler', 'hauler'),
+        numberColumn('loads', 'loads'),
+        bushelColumn('gross', 'grossBushels'),
+        bushelColumn('average load', 'averageLoad'),
+        numberColumn('moisture', 'averageMoisture', { places: 1 }),
+        numberColumn('shrink pct', 'shrinkPercent', { places: 2 }),
+        moneyColumn('paid', (row) => (row.settled === 0 ? null : row.netCents)),
       ],
       rows
     ),
