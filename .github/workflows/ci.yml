@@ -110,6 +110,9 @@ jobs:
       - name: hedge
         run: npm run hedge
 
+      - name: season
+        run: npm run season
+
       - name: haulers
         run: npm run haulers
 

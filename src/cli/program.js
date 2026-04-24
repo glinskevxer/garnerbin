@@ -16,6 +16,7 @@ import { register as registerHedge } from './hedge.js';
 import { register as registerPosition } from './position.js';
 import { register as registerQueue } from './queue.js';
 import { register as registerRegister } from './register.js';
+import { register as registerSeason } from './season.js';
 import { register as registerSettle } from './settle.js';
 import { register as registerSpace } from './space.js';
 import { register as registerStorage } from './storage.js';
@@ -58,6 +59,7 @@ export function buildProgram(version) {
   registerQueue(program);
   registerHaulers(program);
   registerSpace(program);
+  registerSeason(program);
   return program;
 }
 

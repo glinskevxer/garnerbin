@@ -44,6 +44,7 @@ npm run settle
 npm run register
 npm run position
 npm run haulers
+npm run season
 npm run contracts
 npm run space
 npm run storage
