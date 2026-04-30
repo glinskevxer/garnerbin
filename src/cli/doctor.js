@@ -1,4 +1,5 @@
-import { heading, keyValue, renderTable } from '../core/text.js';
+import { heading, keyValue } from '../core/text.js';
+import { countBySeverity, finding, renderFindings } from '../report/findings.js';
 import { monthKey } from '../core/dates.js';
 import { formatContract } from '../pricing/board.js';
 import { openLot } from '../hedging/hedge.js';
@@ -15,10 +16,6 @@ import { readBasis, readBoard, readHouse, readJsonFile, readSamples, readTickets
  * board extract does not carry, a sample for a load that never came.
  */
 
-function finding(severity, code, message) {
-  return { severity, code, message };
-}
-
 export function runDoctor(options) {
   const house = readHouse(options.house);
   const findings = [];
@@ -30,6 +27,7 @@ export function runDoctor(options) {
         finding(
           'warn',
           'NO_DISCOUNTS',
+          '',
           `${house.name} takes ${commodity} and posts no discount schedule`
         )
       );
@@ -43,17 +41,19 @@ export function runDoctor(options) {
     checked.push('tickets');
     for (const problem of read.problems) {
       findings.push(
-        finding('stop', 'BAD_TICKET_ROW', `ticket row ${problem.row}: ${problem.message}`)
+        finding('stop', 'BAD_TICKET_ROW', '', `ticket row ${problem.row}: ${problem.message}`)
       );
     }
     const bins = new Set(house.bins.map((bin) => bin.id));
     for (const ticket of tickets) {
       if (ticket.bin && !bins.has(ticket.bin)) {
-        findings.push(finding('stop', 'NO_SUCH_BIN', `${ticket.number} names bin ${ticket.bin}`));
+        findings.push(
+          finding('stop', 'NO_SUCH_BIN', '', `${ticket.number} names bin ${ticket.bin}`)
+        );
       }
       if (!house.commodities.includes(ticket.commodity)) {
         findings.push(
-          finding('stop', 'COMMODITY_NOT_TAKEN', `${ticket.number} is ${ticket.commodity}`)
+          finding('stop', 'COMMODITY_NOT_TAKEN', '', `${ticket.number} is ${ticket.commodity}`)
         );
       }
     }
@@ -64,19 +64,20 @@ export function runDoctor(options) {
     checked.push('samples');
     for (const problem of read.problems) {
       findings.push(
-        finding('stop', 'BAD_SAMPLE_ROW', `sample row ${problem.row}: ${problem.message}`)
+        finding('stop', 'BAD_SAMPLE_ROW', '', `sample row ${problem.row}: ${problem.message}`)
       );
     }
     const ids = new Set(read.records.map((sample) => sample.id));
     const named = new Set(tickets.map((ticket) => ticket.sampleId).filter(Boolean));
     for (const ticket of tickets.filter((entry) => entry.direction === 'in')) {
       if (!ticket.sampleId) {
-        findings.push(finding('stop', 'NO_SAMPLE_NAMED', `${ticket.number} names no sample`));
+        findings.push(finding('stop', 'NO_SAMPLE_NAMED', '', `${ticket.number} names no sample`));
       } else if (!ids.has(ticket.sampleId)) {
         findings.push(
           finding(
             'stop',
             'SAMPLE_MISSING',
+            '',
             `${ticket.number} names ${ticket.sampleId}, which is not in the file`
           )
         );
@@ -84,13 +85,16 @@ export function runDoctor(options) {
     }
     for (const sample of read.records) {
       if (!named.has(sample.id)) {
-        findings.push(finding('note', 'ORPHAN_SAMPLE', `${sample.id} belongs to no ticket here`));
+        findings.push(
+          finding('note', 'ORPHAN_SAMPLE', '', `${sample.id} belongs to no ticket here`)
+        );
       }
       if (!house.commodities.includes(sample.commodity)) {
         findings.push(
           finding(
             'warn',
             'SAMPLE_NOT_TAKEN',
+            '',
             `${sample.id} is ${sample.commodity}, which this house does not take`
           )
         );
@@ -108,14 +112,14 @@ export function runDoctor(options) {
     )) {
       if (!accounts.has(account)) {
         findings.push(
-          finding('note', 'NO_CONTRACT', `${account} delivered with no contract on file`)
+          finding('note', 'NO_CONTRACT', '', `${account} delivered with no contract on file`)
         );
       }
     }
     for (const contract of contracts) {
       if (!house.commodities.includes(contract.commodity)) {
         findings.push(
-          finding('warn', 'CONTRACT_NOT_TAKEN', `${contract.id} is for ${contract.commodity}`)
+          finding('warn', 'CONTRACT_NOT_TAKEN', '', `${contract.id} is for ${contract.commodity}`)
         );
       }
     }
@@ -134,6 +138,7 @@ export function runDoctor(options) {
           finding(
             'stop',
             'MONTH_NOT_ON_BOARD',
+            '',
             `${lot.id} is in ${month} and the board does not carry it`
           )
         );
@@ -147,7 +152,9 @@ export function runDoctor(options) {
     checked.push('basis');
     for (const commodity of house.commodities) {
       if (!book.boards[commodity]) {
-        findings.push(finding('warn', 'NO_BASIS_POSTED', `no basis is posted for ${commodity}`));
+        findings.push(
+          finding('warn', 'NO_BASIS_POSTED', '', `no basis is posted for ${commodity}`)
+        );
         continue;
       }
       const periods = new Set(periodsFor(book, commodity));
@@ -156,6 +163,7 @@ export function runDoctor(options) {
           finding(
             'warn',
             'NO_BASIS_FOR_DAY',
+            '',
             `the ${commodity} basis does not quote ${monthKey(day)}`
           )
         );
@@ -163,8 +171,7 @@ export function runDoctor(options) {
     }
   }
 
-  const counts = { stop: 0, warn: 0, note: 0 };
-  for (const entry of findings) counts[entry.severity] += 1;
+  const counts = countBySeverity(findings);
 
   const text = [
     heading(`${house.name} doctor`),
@@ -175,16 +182,7 @@ export function runDoctor(options) {
       ['Notes', String(counts.note)],
     ]),
     '',
-    findings.length === 0
-      ? 'Every file agrees with every other one.'
-      : renderTable(
-          [
-            { header: 'level', key: 'severity' },
-            { header: 'what', key: 'code' },
-            { header: 'where', key: 'message' },
-          ],
-          findings
-        ),
+    renderFindings(findings, { nothing: 'Every file agrees with every other one.' }),
   ].join('\n');
 
   return { findings, counts, checked, text };

@@ -1,7 +1,7 @@
 import { isPlainObject } from '../core/assert.js';
 import { assertDay, compareDays, daysBetween } from '../core/dates.js';
 import { formatBushels } from '../core/money.js';
-import { renderTable } from '../core/text.js';
+import { countBySeverity, finding, rank, renderFindings, SEVERITIES } from './findings.js';
 import { overMeterCeiling } from '../weights/moisture.js';
 import { gradeSample } from '../grading/special.js';
 import { SAMPLE_GRADE } from '../grading/standards.js';
@@ -19,13 +19,7 @@ import { reconcile, withinTolerance } from '../weights/reconcile.js';
  * something that will cost money if nobody acts. A note is worth knowing.
  */
 
-export const SEVERITIES = Object.freeze(['stop', 'warn', 'note']);
-
-const RANK = Object.fromEntries(SEVERITIES.map((severity, index) => [severity, index]));
-
-function exception(severity, code, subject, message) {
-  return { severity, code, subject, message };
-}
+const exception = finding;
 
 export function findExceptions(desk, asOf, options = {}) {
   isPlainObject(desk, 'desk');
@@ -136,24 +130,11 @@ export function findExceptions(desk, asOf, options = {}) {
     }
   }
 
-  return found.sort((a, b) => RANK[a.severity] - RANK[b.severity] || a.code.localeCompare(b.code));
-}
-
-export function countBySeverity(exceptions) {
-  const counts = Object.fromEntries(SEVERITIES.map((severity) => [severity, 0]));
-  for (const entry of exceptions) counts[entry.severity] += 1;
-  return counts;
+  return rank(found);
 }
 
 export function renderExceptions(exceptions) {
-  if (exceptions.length === 0) return 'Nothing to look at.';
-  return renderTable(
-    [
-      { header: 'level', key: 'severity' },
-      { header: 'what', key: 'code' },
-      { header: 'on', key: 'subject' },
-      { header: 'why', key: 'message' },
-    ],
-    exceptions
-  );
+  return renderFindings(exceptions);
 }
+
+export { countBySeverity, SEVERITIES };
