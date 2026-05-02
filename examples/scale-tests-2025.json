@@ -1,0 +1,25 @@
+{
+  "tests": [
+    {
+      "scale": "pit scale",
+      "day": "2025-08-14",
+      "inspector": "state weights and measures",
+      "divisionLb": 20,
+      "points": [
+        { "testLoadLb": 10000, "indicatedLb": 10000 },
+        { "testLoadLb": 30000, "indicatedLb": 30010 },
+        { "testLoadLb": 50000, "indicatedLb": 50020 }
+      ]
+    },
+    {
+      "scale": "loadout scale",
+      "day": "2025-08-14",
+      "inspector": "state weights and measures",
+      "divisionLb": 20,
+      "points": [
+        { "testLoadLb": 30000, "indicatedLb": 29990 },
+        { "testLoadLb": 60000, "indicatedLb": 60020 }
+      ]
+    }
+  ]
+}

@@ -7,6 +7,8 @@ import { gradeSample } from '../grading/special.js';
 import { SAMPLE_GRADE } from '../grading/standards.js';
 import { capacityOf } from '../inventory/bins.js';
 import { reconcile, withinTolerance } from '../weights/reconcile.js';
+import { dueForDisposal, inFile } from '../grading/retention.js';
+import { isOverdue, worstPoint } from '../weights/scaleaudit.js';
 
 /**
  * The exception report.
@@ -113,6 +115,44 @@ export function findExceptions(desk, asOf, options = {}) {
     const age = daysBetween(receipt.issuedOn, asOf);
     if (age > 365) {
       found.push(exception('note', 'OLD_RECEIPT', receipt.number, `has been open ${age} days`));
+    }
+  }
+
+  for (const record of dueForDisposal(desk.retained ?? [], asOf)) {
+    found.push(
+      exception(
+        'note',
+        'SAMPLE_DUE_OUT',
+        record.sample,
+        `has been in drawer ${record.drawer} past its window`
+      )
+    );
+  }
+
+  for (const record of inFile(desk.retained ?? [])) {
+    if (record.disputed) {
+      found.push(
+        exception('warn', 'SAMPLE_DISPUTED', record.sample, 'is held against a disputed grade')
+      );
+    }
+  }
+
+  for (const test of desk.scaleTests ?? []) {
+    if (!test.passed) {
+      const off = worstPoint(test);
+      found.push(
+        exception(
+          'stop',
+          'SCALE_OUT_OF_TOLERANCE',
+          test.scale,
+          `read ${off.errorLb} pounds off at ${off.testLoadLb} on ${test.day}`
+        )
+      );
+    }
+    if (isOverdue(test, asOf, options.testIntervalDays)) {
+      found.push(
+        exception('warn', 'SCALE_TEST_OVERDUE', test.scale, `was last tested on ${test.day}`)
+      );
     }
   }
 

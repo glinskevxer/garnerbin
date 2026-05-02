@@ -3,6 +3,8 @@ import { assertDay } from '../core/dates.js';
 import { buildPosition } from '../inventory/position.js';
 import { createContract } from '../contracts/types.js';
 import { openPosition } from '../contracts/apply.js';
+import { fileSample } from '../grading/retention.js';
+import { createScaleTest } from '../weights/scaleaudit.js';
 import { countBySeverity, findExceptions, renderExceptions } from '../report/exceptions.js';
 import { applyTickets } from './contracts.js';
 import { assertClean, readHouse, readJsonFile, readSamples, readTickets } from './desk.js';
@@ -37,6 +39,16 @@ export function runExceptions(options) {
     );
     desk.contracts = desk.tickets ? applyTickets(positions, desk.tickets).positions : positions;
     looked.push('contracts');
+  }
+  if (options.samplefile) {
+    const document = readJsonFile(options.samplefile, 'sample file record');
+    desk.retained = (document.retained ?? []).map((entry) => fileSample(entry));
+    looked.push('sample file');
+  }
+  if (options.scaleTests) {
+    const document = readJsonFile(options.scaleTests, 'scale test file');
+    desk.scaleTests = (document.tests ?? []).map((entry) => createScaleTest(entry));
+    looked.push('scale tests');
   }
   if (options.position) {
     const document = readJsonFile(options.position, 'position file');
@@ -75,6 +87,8 @@ export function register(program) {
     .option('-s, --samples <path>', 'a sample extract')
     .option('--contracts <path>', 'a contract file')
     .option('--position <path>', 'a position file')
+    .option('--samplefile <path>', 'the retained sample file')
+    .option('--scale-tests <path>', 'a scale test file')
     .option('--unsettled-days <days>', 'how long a ticket may sit unsettled', '3')
     .option('--unhedged-limit <bushels>', 'the unhedged covenant, in bushels')
     .action((options) => {

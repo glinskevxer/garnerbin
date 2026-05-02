@@ -32,7 +32,7 @@
     "contracts": "node bin/garnerbin.js contracts -f examples/contracts-2025.json -t examples/tickets-2025-10-09.csv",
     "coverage": "vitest run --coverage",
     "doctor": "node bin/garnerbin.js doctor -c examples/rush-creek.json -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv --contracts examples/contracts-2025.json --board examples/board-2025-10-09.csv --basis examples/basis-2025-10-09.csv",
-    "exceptions": "node bin/garnerbin.js exceptions -c examples/rush-creek.json -a 2025-10-20 -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv",
+    "exceptions": "node bin/garnerbin.js exceptions -c examples/rush-creek.json -a 2025-10-20 -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv --scale-tests examples/scale-tests-2025.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "grade": "node bin/garnerbin.js grade -c examples/rush-creek.json -s examples/samples-2025-10-09.csv",

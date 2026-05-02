@@ -6,6 +6,8 @@ import { buildPosition } from '../../src/inventory/position.js';
 import { createContract } from '../../src/contracts/types.js';
 import { applyLoad, openPosition } from '../../src/contracts/apply.js';
 import { issueReceipt } from '../../src/storage/receipts.js';
+import { fileSample, markDisputed } from '../../src/grading/retention.js';
+import { createScaleTest } from '../../src/weights/scaleaudit.js';
 import {
   countBySeverity,
   findExceptions,
@@ -161,6 +163,74 @@ describe('the rest of the desk', () => {
   it('warns when the house is out of tolerance', () => {
     const desk = { reconciliation: { receipts: 1_000_000, measured: 1_020_000 } };
     expect(findExceptions(desk, '2025-11-01')[0].code).toBe('OUT_OF_TOLERANCE');
+  });
+});
+
+describe('the sample file', () => {
+  const retained = [
+    fileSample({ sample: 'S-4471', ticket: 'T-1', filedOn: '2025-10-09', drawer: 'A-3' }),
+    markDisputed(
+      fileSample({ sample: 'S-4472', ticket: 'T-2', filedOn: '2025-10-09', drawer: 'A-3' }),
+      { day: '2025-11-20' }
+    ),
+  ];
+
+  it('says nothing while everything is inside its window', () => {
+    expect(
+      findExceptions({ retained }, '2025-10-20').some((e) => e.code === 'SAMPLE_DUE_OUT')
+    ).toBe(false);
+  });
+
+  it('notes a sample that has sat past its window', () => {
+    const found = findExceptions({ retained }, '2025-12-20');
+    const note = found.find((entry) => entry.code === 'SAMPLE_DUE_OUT');
+    expect(note.subject).toBe('S-4471');
+    expect(note.message).toContain('drawer A-3');
+  });
+
+  it('warns while a disputed sample is still held', () => {
+    const found = findExceptions({ retained }, '2025-12-20');
+    expect(found.find((entry) => entry.code === 'SAMPLE_DISPUTED').subject).toBe('S-4472');
+  });
+
+  it('does not report a disputed sample as due out', () => {
+    const found = findExceptions({ retained }, '2025-12-20');
+    expect(found.filter((entry) => entry.code === 'SAMPLE_DUE_OUT')).toHaveLength(1);
+  });
+});
+
+describe('the scale', () => {
+  const good = createScaleTest({
+    scale: 'pit scale',
+    day: '2025-08-14',
+    divisionLb: 20,
+    points: [{ testLoadLb: 50_000, indicatedLb: 50_010 }],
+  });
+  const bad = createScaleTest({
+    scale: 'truck scale',
+    day: '2025-08-14',
+    divisionLb: 20,
+    points: [{ testLoadLb: 50_000, indicatedLb: 50_120 }],
+  });
+
+  it('says nothing about a scale that tested true and is not due', () => {
+    expect(findExceptions({ scaleTests: [good] }, '2025-09-01')).toEqual([]);
+  });
+
+  it('stops on a scale that tested out of tolerance', () => {
+    const found = findExceptions({ scaleTests: [bad] }, '2025-09-01');
+    expect(found[0].code).toBe('SCALE_OUT_OF_TOLERANCE');
+    expect(found[0].message).toContain('120 pounds off at 50000');
+  });
+
+  it('warns on a scale that is overdue for a test', () => {
+    const found = findExceptions({ scaleTests: [good] }, '2026-06-01');
+    expect(found.some((entry) => entry.code === 'SCALE_TEST_OVERDUE')).toBe(true);
+  });
+
+  it('takes a shorter test interval', () => {
+    const found = findExceptions({ scaleTests: [good] }, '2025-10-01', { testIntervalDays: 30 });
+    expect(found.some((entry) => entry.code === 'SCALE_TEST_OVERDUE')).toBe(true);
   });
 });
 

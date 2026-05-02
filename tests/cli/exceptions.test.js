@@ -75,6 +75,25 @@ describe('with the rest of the desk', () => {
   });
 });
 
+describe('the scale tests', () => {
+  it('reads them when it is given them', () => {
+    const result = runExceptions({ ...base, scaleTests: example('scale-tests-2025.json') });
+    expect(result.looked).toContain('scale tests');
+    expect(result.exceptions.some((entry) => entry.code === 'SCALE_OUT_OF_TOLERANCE')).toBe(false);
+  });
+
+  it('warns once the scales are overdue', () => {
+    const result = runExceptions({
+      ...base,
+      asOf: '2026-06-01',
+      scaleTests: example('scale-tests-2025.json'),
+    });
+    expect(result.exceptions.filter((entry) => entry.code === 'SCALE_TEST_OVERDUE')).toHaveLength(
+      2
+    );
+  });
+});
+
 describe('what it refuses', () => {
   it('refuses a day it cannot read', () => {
     expect(() => runExceptions({ ...base, asOf: 'today' })).toThrow(/YYYY-MM-DD/);
