@@ -102,6 +102,20 @@
       }
     }
   },
+  "premiums": {
+    "hrw": {
+      "scales": {
+        "protein": {
+          "base": 11,
+          "step": 0.25,
+          "abovePoints": 300,
+          "belowPoints": 400,
+          "ceiling": 13,
+          "floor": 9
+        }
+      }
+    }
+  },
   "storage": {
     "ratePointsPerMonth": 500,
     "proration": "daily",

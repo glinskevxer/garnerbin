@@ -6,6 +6,7 @@ import { grossBushelsOf } from '../weights/ticket.js';
 import { gradeSample } from '../grading/special.js';
 import { readingsOf } from '../grading/sample.js';
 import { totalDiscount } from '../pricing/discounts.js';
+import { totalPremium } from '../pricing/premiums.js';
 import { applyAssessments } from './deductions.js';
 
 /**
@@ -20,6 +21,10 @@ import { applyAssessments } from './deductions.js';
  * change the total on a single load, but it does change what prints on the
  * statement and what the grower argues about, and it is what every posted
  * schedule in the country means by a discount.
+ *
+ * Premiums go on the same way and in the same units. A house that pays for
+ * protein and discounts for damage does both to the price, and the net price is
+ * what everything downstream multiplies by.
  */
 
 export function settleLoad(input) {
@@ -44,9 +49,13 @@ export function settleLoad(input) {
   const discounts = input.discountSchedule
     ? totalDiscount(input.discountSchedule, readings)
     : { lines: [], totalPoints: 0 };
-  const netPricePoints = bidPoints - discounts.totalPoints;
+  const premiums = input.premiumSchedule
+    ? totalPremium(input.premiumSchedule, readings)
+    : { lines: [], totalPoints: 0 };
+  const netPricePoints = bidPoints - discounts.totalPoints + premiums.totalPoints;
   const grossCents = extend(bidPoints, weights.netBushels);
   const discountCents = extend(discounts.totalPoints, weights.netBushels);
+  const premiumCents = extend(premiums.totalPoints, weights.netBushels);
   const valueCents = extend(netPricePoints, weights.netBushels);
 
   const drying =
@@ -76,9 +85,12 @@ export function settleLoad(input) {
     bidPoints,
     discountLines: discounts.lines,
     discountPoints: discounts.totalPoints,
+    premiumLines: premiums.lines,
+    premiumPoints: premiums.totalPoints,
     netPricePoints,
     grossCents,
     discountCents,
+    premiumCents,
     valueCents,
     drying,
     assessments: applied,

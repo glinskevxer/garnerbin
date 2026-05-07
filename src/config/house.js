@@ -5,6 +5,7 @@ import { assertCommodityId } from '../commodity/registry.js';
 import { createBin } from '../inventory/bins.js';
 import { createDryingSchedule } from '../weights/drying.js';
 import { createDiscountSchedule } from '../pricing/discounts.js';
+import { createPremiumSchedule } from '../pricing/premiums.js';
 import { createStorageTerms } from '../storage/accrual.js';
 import { createDpTerms } from '../contracts/dp.js';
 import { checkoffFor, createAssessment } from '../settlement/deductions.js';
@@ -29,6 +30,7 @@ export const HOUSE_SCHEMA = defineSchema({
   bins: { type: 'array', required: true },
   drying: { type: 'object' },
   discounts: { type: 'object' },
+  premiums: { type: 'object' },
   storage: { type: 'object' },
   delayedPrice: { type: 'object' },
   assessments: { type: 'array' },
@@ -63,6 +65,11 @@ export function loadHouse(document) {
     discounts[id] = createDiscountSchedule({ id: `${id}-discounts`, commodity: id, ...schedule });
   }
 
+  const premiums = {};
+  for (const [id, schedule] of Object.entries(document.premiums ?? {})) {
+    premiums[id] = createPremiumSchedule({ id: `${id}-premiums`, commodity: id, ...schedule });
+  }
+
   const assessments = (document.assessments ?? []).map((entry) =>
     entry.checkoffFor ? checkoffFor(assertCommodityId(entry.checkoffFor)) : createAssessment(entry)
   );
@@ -76,6 +83,7 @@ export function loadHouse(document) {
     bins: Object.freeze(bins),
     drying: Object.freeze(drying),
     discounts: Object.freeze(discounts),
+    premiums: Object.freeze(premiums),
     storage: document.storage ? createStorageTerms(document.storage) : null,
     delayedPrice: document.delayedPrice ? createDpTerms(document.delayedPrice) : null,
     assessments: Object.freeze(assessments),
@@ -117,6 +125,10 @@ export function discountsFor(house, commodityId) {
   return house.discounts[assertCommodityId(commodityId)] ?? null;
 }
 
+export function premiumsFor(house, commodityId) {
+  return house.premiums[assertCommodityId(commodityId)] ?? null;
+}
+
 export function houseSummary(house) {
   return {
     name: house.name,
@@ -125,6 +137,7 @@ export function houseSummary(house) {
     shrinkFactor: house.shrinkFactor,
     hasDrying: Object.keys(house.drying).length > 0,
     hasDiscounts: Object.keys(house.discounts).length > 0,
+    hasPremiums: Object.keys(house.premiums).length > 0,
     hasStorage: house.storage !== null,
   };
 }

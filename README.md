@@ -14,7 +14,8 @@ standing at the window.
   that force sample grade.
 - Turns net pounds into settlement bushels: dockage off the gross, then shrink
   off what is left, at the house shrink factor.
-- Settles a load against a posted discount schedule, a drying schedule and the
+- Settles a load against a posted discount schedule, a premium scale, a drying
+  schedule and the
   commodity checkoff, and prints a statement a grower can follow with a
   calculator.
 - Keeps contracts of all six kinds, applies loads to them, rolls the futures leg

@@ -42,6 +42,13 @@ function priceRows(settlement) {
       amount: '',
     });
   }
+  for (const line of settlement.premiumLines ?? []) {
+    rows.push({
+      label: `${getFactor(line.factor).label} at ${line.value}`,
+      rate: `+${formatPrice(line.points)}`,
+      amount: '',
+    });
+  }
   rows.push({ label: 'Net price', rate: formatPrice(settlement.netPricePoints), amount: '' });
   rows.push({
     label: `Value on ${formatBushels(settlement.weights.netBushels)} bushels`,

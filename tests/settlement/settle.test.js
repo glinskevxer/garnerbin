@@ -4,6 +4,7 @@ import { createTicket } from '../../src/weights/ticket.js';
 import { createSample } from '../../src/grading/sample.js';
 import { createDryingSchedule } from '../../src/weights/drying.js';
 import { createDiscountSchedule } from '../../src/pricing/discounts.js';
+import { createPremiumSchedule } from '../../src/pricing/premiums.js';
 import { checkoffFor, serviceCharge } from '../../src/settlement/deductions.js';
 import { realisedPrice, settleLoad, settleRun } from '../../src/settlement/settle.js';
 
@@ -111,6 +112,77 @@ describe('settling a wet damaged load', () => {
     expect(result.grade.grade).toBe(4);
   });
 });
+
+describe('a load that earns a premium', () => {
+  const wheatTicket = createTicket({
+    number: 'T-20001',
+    day: '2026-01-15',
+    commodity: 'hrw',
+    account: 'VOSS-LAND-CO',
+    grossPounds: 78_100,
+    tarePounds: 28_100,
+  });
+
+  const wheat = createSample({
+    id: 'S-W1',
+    commodity: 'hrw',
+    day: '2026-01-15',
+    testWeight: 60.5,
+    damagedTotal: 1,
+    heatDamaged: 0.1,
+    foreignMaterial: 0.3,
+    shrunkenBroken: 2,
+    defects: 2.5,
+    wheatOtherClasses: 1,
+    contrastingClasses: 0.5,
+    protein: 12,
+    moisture: 12.4,
+  });
+
+  const premiumSchedule = createPremiumSchedule({
+    id: 'blair',
+    commodity: 'hrw',
+    scales: { protein: { base: 11, step: 0.25, abovePoints: 300, belowPoints: 400 } },
+  });
+
+  it('adds the premium to the price', () => {
+    const result = settleLoad({
+      ticket: wheatTicket,
+      sample: wheat,
+      bidPoints: 58_000,
+      premiumSchedule,
+    });
+    expect(result.premiumPoints).toBe(1200);
+    expect(result.netPricePoints).toBe(59_200);
+    expect(result.premiumLines[0].factor).toBe('protein');
+  });
+
+  it('takes a discount off the same price', () => {
+    const thin = createSample({ ...readingsFor(wheat), id: 'S-W2', protein: 10.5 });
+    const result = settleLoad({
+      ticket: wheatTicket,
+      sample: thin,
+      bidPoints: 58_000,
+      premiumSchedule,
+    });
+    expect(result.premiumPoints).toBe(-800);
+    expect(result.netPricePoints).toBe(57_200);
+  });
+
+  it('pays the bid when the house posts no premium schedule', () => {
+    const result = settleLoad({ ticket: wheatTicket, sample: wheat, bidPoints: 58_000 });
+    expect(result.premiumPoints).toBe(0);
+    expect(result.premiumLines).toEqual([]);
+    expect(result.netPricePoints).toBe(58_000);
+  });
+});
+
+function readingsFor(sample) {
+  const copy = { ...sample };
+  delete copy.grams;
+  delete copy.grader;
+  return copy;
+}
 
 describe('extras', () => {
   it('adds a service charge on top', () => {

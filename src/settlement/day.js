@@ -15,6 +15,7 @@ import { settleLoad } from './settle.js';
 export function scheduleFor(house, commodity) {
   return {
     discountSchedule: house.discounts[commodity] ?? null,
+    premiumSchedule: house.premiums?.[commodity] ?? null,
     dryingSchedule: house.drying[commodity] ?? null,
     assessments: house.assessments.filter((entry) => entry.id.startsWith(`${commodity}-`)),
     shrinkFactor: house.shrinkFactor,

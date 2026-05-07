@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   assertTakes,
+  premiumsFor,
   binOf,
   discountsFor,
   dryingFor,
@@ -33,6 +34,7 @@ function document(overrides = {}) {
         },
       },
     },
+    premiums: { hrw: { scales: { protein: { base: 11, abovePoints: 300 } } } },
     storage: { ratePointsPerMonth: 500, freeUntil: '2026-01-01' },
     delayedPrice: { ratePointsPerMonth: 400, freeDays: 15 },
     assessments: [{ checkoffFor: 'corn' }],
@@ -48,6 +50,8 @@ describe('loading a house', () => {
     expect(house.bins[0].id).toBe('B-1');
     expect(dryingFor(house, 'corn').tiers[0].ratePoints).toBe(450);
     expect(discountsFor(house, 'corn').commodity).toBe('corn');
+    expect(premiumsFor(house, 'hrw').scales.protein.base).toBe(11);
+    expect(premiumsFor(house, 'corn')).toBeNull();
   });
 
   it('keeps the terms it was given', () => {
@@ -149,6 +153,7 @@ describe('reading a house', () => {
       shrinkFactor: 1.4,
       hasDrying: true,
       hasDiscounts: true,
+      hasPremiums: true,
       hasStorage: true,
     });
   });

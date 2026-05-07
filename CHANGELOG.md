@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Premium scales run through the settlement, so a house that pays for protein
+  and discounts for damage does both to the same price.
+- The sample file and the scale tests are on the exception sheet.
+
 - The bid sheet, so the number on the wall and the number the settlement uses
   are worked out in one place.
 - Grain bank accounts, with the shrink taken on the way in.
