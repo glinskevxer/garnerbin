@@ -89,6 +89,9 @@ jobs:
       - name: grade
         run: npm run grade
 
+      - name: milling
+        run: npm run milling
+
       - name: settle
         run: npm run settle
 

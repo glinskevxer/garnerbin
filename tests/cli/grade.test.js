@@ -42,6 +42,58 @@ describe('grading a file', () => {
   });
 });
 
+describe('the milling readings', () => {
+  const wheat = {
+    samples: example('samples-wheat-2026-01.csv'),
+    house: example('rush-creek.json'),
+  };
+
+  it('prints them under the certificate for a wheat sample', () => {
+    const result = runGrade({ ...wheat, id: 'S-6101' });
+    expect(result.text).toContain('Protein on the twelve basis');
+    expect(result.text).toContain('Falling number');
+    expect(result.text).toContain('Millable');
+  });
+
+  it('puts protein onto the twelve basis', () => {
+    expect(runGrade({ ...wheat, id: 'S-6101' }).text).toMatch(
+      /Protein on the twelve basis +12\.37/
+    );
+  });
+
+  it('turns a sprouted load down for milling', () => {
+    const result = runGrade({ ...wheat, id: 'S-6103' });
+    expect(result.text).toContain('sprouted');
+    expect(result.text).toMatch(/Millable +no/);
+  });
+
+  it('prints nothing extra for corn', () => {
+    const result = runGrade({ ...base, id: 'S-4471' });
+    expect(result.text).not.toContain('Falling number');
+  });
+
+  it('grades a whole wheat file without the milling block', () => {
+    const result = runGrade(wheat);
+    expect(result.graded).toHaveLength(4);
+    expect(result.text).not.toContain('Millable');
+  });
+
+  it('lists the markets a clean load can still go to', () => {
+    expect(runGrade({ ...wheat, id: 'S-6104' }).text).toMatch(/Markets open +human, swine/);
+  });
+
+  it('reads a load with no falling number as millable', () => {
+    const noSprout = runGrade({ ...wheat, id: 'S-6104' });
+    expect(noSprout.text).toMatch(/Millable +yes/);
+  });
+
+  it('reports protein both ways round', () => {
+    const text = runGrade({ ...wheat, id: 'S-6102' }).text;
+    expect(text).toContain('Protein as received');
+    expect(text).toMatch(/Falling number +318 \(sound\)/);
+  });
+});
+
 describe('one certificate', () => {
   it('prints the sheet for a single sample', () => {
     const result = runGrade({ ...base, id: 'S-4472' });

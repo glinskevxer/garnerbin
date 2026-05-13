@@ -39,6 +39,7 @@
     "haulers": "node bin/garnerbin.js haulers -c examples/rush-creek.json -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv -b 4.2750",
     "hedge": "node bin/garnerbin.js hedge -f examples/hedge-book-2025-11-14.json --board examples/board-2025-10-09.csv -d 2025-10-09",
     "lint": "eslint .",
+    "milling": "node bin/garnerbin.js grade -c examples/rush-creek.json -s examples/samples-wheat-2026-01.csv -i S-6103",
     "position": "node bin/garnerbin.js position -f examples/position-2025-11-14.json -c examples/rush-creek.json",
     "queue": "node bin/garnerbin.js queue -f examples/arrivals-2025-10-09.json",
     "register": "node bin/garnerbin.js register -c examples/rush-creek.json -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv -b 4.2750",

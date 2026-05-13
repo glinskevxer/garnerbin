@@ -3,6 +3,9 @@ import { heading, renderTable } from '../core/text.js';
 import { certificateFor } from '../grading/certificate.js';
 import { gradeSample } from '../grading/special.js';
 import { gradeDistribution, worstFactor } from '../report/grades.js';
+import { millingReport } from '../grading/protein.js';
+import { isWheat } from '../commodity/registry.js';
+import { keyValue } from '../core/text.js';
 import { readHouse, readSamples } from './desk.js';
 
 /**
@@ -34,8 +37,11 @@ export function runGrade(options) {
     });
   }
   if (options.id) {
+    const parts = [certificateFor(wanted[0], { house: house?.name })];
+    const milling = millingLines(wanted[0]);
+    if (milling !== null) parts.push('', milling);
     return {
-      text: certificateFor(wanted[0], { house: house?.name }),
+      text: parts.join('\n'),
       graded: wanted.map((sample) => gradeSample(sample.commodity, sample)),
     };
   }
@@ -80,6 +86,29 @@ export function runGrade(options) {
     text: lines.join('\n'),
     graded: wanted.map((sample) => gradeSample(sample.commodity, sample)),
   };
+}
+
+/**
+ * The milling readings, for the grains they apply to. Protein and falling
+ * number are not grade factors, so they are not on the certificate table, and a
+ * mill will not take the load without them.
+ */
+export function millingLines(sample) {
+  if (!isWheat(sample.commodity)) return null;
+  const report = millingReport(sample);
+  if (report.protein === null && report.fallingNumber === null && report.don === null) return null;
+  const rows = [];
+  if (report.protein !== null) {
+    rows.push(['Protein on the twelve basis', report.protein.toFixed(2)]);
+    rows.push(['Protein as received', report.proteinAsIs.toFixed(2)]);
+  }
+  if (report.fallingNumber !== null) {
+    rows.push(['Falling number', `${report.fallingNumber} (${report.sprout})`]);
+  }
+  if (report.don !== null) rows.push(['Vomitoxin', `${report.don} ppm`]);
+  rows.push(['Markets open', report.markets.join(', ')]);
+  rows.push(['Millable', report.millable ? 'yes' : 'no']);
+  return keyValue(rows);
 }
 
 export function register(program) {

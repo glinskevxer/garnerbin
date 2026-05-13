@@ -41,6 +41,7 @@ A whole worked day lives in `examples/`. Every command below runs against it:
 npm run validate
 npm run bids
 npm run grade
+npm run milling
 npm run settle
 npm run register
 npm run position
