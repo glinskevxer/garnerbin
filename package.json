@@ -25,6 +25,7 @@
     "accounts": "node bin/garnerbin.js accounts -f examples/accounts-2025.json",
     "audit": "node bin/garnerbin.js book -c examples/rush-creek.json -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv -b 4.2750 -o /tmp/garnerbin-journal.json && node bin/garnerbin.js audit -f /tmp/garnerbin-journal.json -t examples/tickets-2025-10-09.csv",
     "bids": "node bin/garnerbin.js bids --board examples/board-2025-10-09.csv --basis examples/basis-2025-10-09.csv -d 2025-10-09 -c examples/rush-creek.json",
+    "bins": "node bin/garnerbin.js bins -c examples/rush-creek.json -f examples/holdings-2025-09-25.json --cables examples/cables-2025-11-14.json",
     "blend": "node bin/garnerbin.js blend -s examples/samples-2025-10-09.csv --base S-4474 --base-bushels 100000 --add S-4476 --add-bushels 20000 --target 2",
     "book": "node bin/garnerbin.js book -c examples/rush-creek.json -t examples/tickets-2025-10-09.csv -s examples/samples-2025-10-09.csv -b 4.2750",
     "cars": "node bin/garnerbin.js cars -b 450000 --commodity corn --car hopper4750",

@@ -48,6 +48,7 @@ npm run position
 npm run haulers
 npm run season
 npm run contracts
+npm run bins
 npm run space
 npm run storage
 npm run accounts

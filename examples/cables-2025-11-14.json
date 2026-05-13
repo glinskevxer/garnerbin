@@ -1,0 +1,60 @@
+{
+  "day": "2025-11-14",
+  "weather": { "airTempF": 38, "relativeHumidity": 0.62 },
+  "bins": {
+    "B-1": { "grainTempF": 58, "grainMoisture": 15.4 },
+    "B-2": { "grainTempF": 44, "grainMoisture": 14.2 },
+    "B-3": { "grainTempF": 41, "grainMoisture": 12.4 },
+    "F-1": { "grainTempF": 46, "grainMoisture": 12.8 }
+  },
+  "readings": [
+    {
+      "bin": "B-1",
+      "day": "2025-11-14",
+      "cable": "C-1",
+      "sensor": "S-1",
+      "depthFeet": 10,
+      "tempF": 57
+    },
+    {
+      "bin": "B-1",
+      "day": "2025-11-14",
+      "cable": "C-1",
+      "sensor": "S-2",
+      "depthFeet": 25,
+      "tempF": 58
+    },
+    {
+      "bin": "B-1",
+      "day": "2025-11-14",
+      "cable": "C-1",
+      "sensor": "S-3",
+      "depthFeet": 40,
+      "tempF": 59
+    },
+    {
+      "bin": "B-1",
+      "day": "2025-11-14",
+      "cable": "C-2",
+      "sensor": "S-1",
+      "depthFeet": 10,
+      "tempF": 58
+    },
+    {
+      "bin": "B-1",
+      "day": "2025-11-14",
+      "cable": "C-2",
+      "sensor": "S-2",
+      "depthFeet": 25,
+      "tempF": 72
+    },
+    {
+      "bin": "B-1",
+      "day": "2025-11-14",
+      "cable": "C-2",
+      "sensor": "S-3",
+      "depthFeet": 40,
+      "tempF": 58
+    }
+  ]
+}

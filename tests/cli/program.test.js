@@ -26,6 +26,7 @@ describe('the program', () => {
       'accounts',
       'audit',
       'bids',
+      'bins',
       'blend',
       'book',
       'cars',
