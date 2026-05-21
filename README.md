@@ -54,6 +54,7 @@ npm run storage
 npm run accounts
 npm run hedge
 npm run cars
+npm run ship
 npm run queue
 npm run blend
 npm run exceptions

@@ -19,6 +19,7 @@ import { register as registerQueue } from './queue.js';
 import { register as registerRegister } from './register.js';
 import { register as registerSeason } from './season.js';
 import { register as registerSettle } from './settle.js';
+import { register as registerShip } from './ship.js';
 import { register as registerSpace } from './space.js';
 import { register as registerStorage } from './storage.js';
 import { register as registerValidate } from './validate.js';
@@ -62,6 +63,7 @@ export function buildProgram(version) {
   registerSpace(program);
   registerSeason(program);
   registerBins(program);
+  registerShip(program);
   return program;
 }
 

@@ -1,0 +1,85 @@
+{
+  "orders": [
+    {
+      "number": "SO-220",
+      "buyer": "Archer Blair",
+      "commodity": "corn",
+      "bushels": 40000000,
+      "mode": "rail",
+      "destination": "Blair NE",
+      "shipFrom": "2026-01-05",
+      "shipTo": "2026-02-27",
+      "pricePoints": 46000,
+      "spec": { "grade": 2, "limits": { "moisture": 15.5 } }
+    },
+    {
+      "number": "SO-221",
+      "buyer": "Kell Junction Feed",
+      "commodity": "corn",
+      "bushels": 4000000,
+      "mode": "truck",
+      "destination": "Kell Junction",
+      "shipFrom": "2026-01-05",
+      "shipTo": "2026-01-31",
+      "pricePoints": 45000,
+      "spec": { "grade": 3, "rejectSpecialGrades": false }
+    }
+  ],
+  "shipments": [
+    {
+      "order": "SO-220",
+      "day": "2026-01-20",
+      "car": "hopper4750",
+      "cars": [
+        {
+          "car": "BNSF476211",
+          "ticket": "T-11201",
+          "seal": "SL-4471",
+          "bushels": 380000,
+          "sample": {
+            "id": "S-11201",
+            "commodity": "corn",
+            "day": "2026-01-20",
+            "testWeight": 56.2,
+            "damagedTotal": 2.1,
+            "heatDamaged": 0,
+            "bcfm": 1.8,
+            "moisture": 14.6
+          }
+        },
+        {
+          "car": "BNSF476212",
+          "ticket": "T-11202",
+          "seal": "SL-4472",
+          "bushels": 379000,
+          "sample": {
+            "id": "S-11202",
+            "commodity": "corn",
+            "day": "2026-01-20",
+            "testWeight": 55.4,
+            "damagedTotal": 3.6,
+            "heatDamaged": 0.1,
+            "bcfm": 2.4,
+            "moisture": 15.1
+          }
+        },
+        {
+          "car": "BNSF476213",
+          "ticket": "T-11203",
+          "seal": "SL-4473",
+          "bushels": 381500,
+          "sample": {
+            "id": "S-11203",
+            "commodity": "corn",
+            "day": "2026-01-20",
+            "testWeight": 55.9,
+            "damagedTotal": 2.8,
+            "heatDamaged": 0,
+            "bcfm": 2.1,
+            "moisture": 14.9
+          }
+        }
+      ]
+    }
+  ]
+}
