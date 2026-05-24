@@ -2,6 +2,12 @@ import { ConfigError } from '../core/errors.js';
 import { formatBushels, formatPrice } from '../core/money.js';
 import { heading, keyValue, renderTable } from '../core/text.js';
 import { createContract, openLegs, priceOf, withinWindow } from '../contracts/types.js';
+import { canRoll, hasFuturesLeg, rollCost } from '../contracts/roll.js';
+import { priceContract } from '../contracts/pricing.js';
+import { formatContract, nextContract } from '../pricing/board.js';
+import { settleOf, spread } from '../pricing/quotes.js';
+import { quoteFor } from '../pricing/basisbook.js';
+import { readBasis, readBoard } from './desk.js';
 import { applyLoad, openPosition, remainingBushels, summarise } from '../contracts/apply.js';
 import { grossBushelsOf } from '../weights/ticket.js';
 import { assertClean, readJsonFile, readTickets } from './desk.js';
@@ -88,6 +94,12 @@ export function runContracts(options) {
     };
   });
 
+  const board = options.board ? readBoard(options.board, options.day) : null;
+  const basis = options.basis
+    ? readBasis(options.basis, { house: 'desk', day: options.day })
+    : null;
+  const open = board === null ? [] : openLegReport(positions, board, basis, options);
+
   const lines = [
     heading('Contract register'),
     '',
@@ -118,6 +130,22 @@ export function runContracts(options) {
     ]),
   ];
 
+  if (open.length > 0) {
+    lines.push(
+      '',
+      heading('what the open legs are worth today'),
+      renderTable(
+        [
+          { header: 'contract', key: 'id' },
+          { header: 'open', key: 'open' },
+          { header: 'if priced now', key: 'priced', align: 'right' },
+          { header: 'roll', key: 'roll' },
+        ],
+        open
+      )
+    );
+  }
+
   if (unapplied.length > 0) {
     lines.push(
       '',
@@ -131,6 +159,68 @@ export function runContracts(options) {
   return { positions, unapplied, text: lines.join('\n') };
 }
 
+/**
+ * What the open legs are worth if the grower prices today, and whether the
+ * futures leg can still be rolled. A grower calling to ask what his hedged to
+ * arrive is worth wants both numbers in the same breath.
+ */
+export function openLegReport(positions, board, basis, options) {
+  const day = options.day ?? board.day;
+  return positions
+    .filter((position) => openLegs(position.contract).length > 0)
+    .map((position) => {
+      const contract = position.contract;
+      const legs = openLegs(contract);
+      let priced = 'no board for it';
+      try {
+        const period = options.period ?? day.slice(0, 7);
+        const futuresPoints = legs.includes('futures')
+          ? settleOf(board, formatContract(contract.futuresContract ?? board.quotes[0].contract))
+          : contract.futuresPoints;
+        const basisPoints = legs.includes('basis')
+          ? basis === null
+            ? null
+            : quoteFor(basis, contract.commodity, period).basisPoints
+          : contract.basisPoints;
+        priced =
+          basisPoints === null
+            ? 'no basis posted'
+            : formatPrice(
+                priceOf(
+                  priceContract(contract, {
+                    day,
+                    futuresPoints,
+                    futuresContract: formatContract(
+                      contract.futuresContract ?? board.quotes[0].contract
+                    ),
+                    basisPoints,
+                  })
+                )
+              );
+      } catch (error) {
+        priced = error.code ?? 'cannot price it';
+      }
+      return {
+        id: contract.id,
+        open: legs.join(' and '),
+        priced,
+        roll: rollNote(contract, board, day),
+      };
+    });
+}
+
+function rollNote(contract, board, day) {
+  if (!hasFuturesLeg(contract)) return 'no futures leg';
+  if (!canRoll(contract, day)) return 'past first notice';
+  const target = nextContract(contract.commodity, contract.futuresContract);
+  try {
+    const move = spread(board, formatContract(contract.futuresContract), formatContract(target));
+    return `to ${formatContract(target)} for ${formatPrice(rollCost(move.points))}`;
+  } catch {
+    return `to ${formatContract(target)}, board has no quote`;
+  }
+}
+
 export function register(program) {
   program
     .command('contracts')
@@ -139,6 +229,10 @@ export function register(program) {
     .option('-t, --tickets <path>', 'a scale ticket extract to apply')
     .option('--account <account>', 'only this account')
     .option('--commodity <id>', 'only this commodity')
+    .option('--board <path>', 'a settlement board file, to value the open legs')
+    .option('--basis <path>', 'a basis board file, to value an open basis')
+    .option('--period <period>', 'the delivery period to value an open basis at')
+    .option('-d, --day <day>', 'the day the boards are for')
     .action((options) => {
       console.log(runContracts(options).text);
     });

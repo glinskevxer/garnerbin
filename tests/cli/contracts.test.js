@@ -45,6 +45,42 @@ describe('the register on its own', () => {
   });
 });
 
+describe('valuing the open legs', () => {
+  const withBoard = {
+    ...base,
+    board: example('board-2025-10-09.csv'),
+    basis: example('basis-2025-10-09.csv'),
+    day: '2025-10-09',
+    period: '2025-10',
+  };
+
+  it('says nothing about them without a board', () => {
+    expect(runContracts(base).text).not.toContain('what the open legs are worth');
+  });
+
+  it('values every contract with a leg still open', () => {
+    const result = runContracts(withBoard);
+    expect(result.text).toContain('what the open legs are worth today');
+    expect(result.text).toContain('C-1002');
+    expect(result.text).toContain('C-1003');
+    expect(result.text).toContain('C-1004');
+  });
+
+  it('leaves the fully priced contracts out of it', () => {
+    const lines = runContracts(withBoard).text.split('what the open legs are worth today')[1];
+    expect(lines).not.toContain('C-1001');
+  });
+
+  it('says where a futures leg would roll to and what it costs', () => {
+    expect(runContracts(withBoard).text).toMatch(/to ZC[FHKNUZ]26 for/);
+  });
+
+  it('says when a leg is past first notice', () => {
+    const late = runContracts({ ...withBoard, day: '2025-12-01' });
+    expect(late.text).toContain('past first notice');
+  });
+});
+
 describe('applying a days loads', () => {
   const result = runContracts({ ...base, tickets: example('tickets-2025-10-09.csv') });
 
