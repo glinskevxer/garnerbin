@@ -1,8 +1,11 @@
 import { formatPrice } from '../core/money.js';
+import { heading, renderTable } from '../core/text.js';
 import { formatBasis } from '../pricing/basis.js';
 import { buildBidSheet, renderBidSheet } from '../pricing/bidsheet.js';
+import { compareDestinations, createFreightRate, describeNetback } from '../pricing/freight.js';
+import { priceColumn, textColumn } from '../report/columns.js';
 import { toCsv } from '../io/csv.js';
-import { readBasis, readBoard, readHouse, writeOut } from './desk.js';
+import { readBasis, readBoard, readHouse, readJsonFile, writeOut } from './desk.js';
 
 /**
  * Print the bid sheet.
@@ -27,8 +30,48 @@ export function runBids(options) {
     basis,
     commodities: options.commodity ? [options.commodity] : house?.commodities,
   });
+  const netbacks = options.freight ? netbackTable(options, sheet) : null;
+  const parts = [renderBidSheet(sheet)];
+  if (netbacks !== null) parts.push('', renderNetbacks(netbacks));
   if (options.out) writeOut(options.out, bidsCsv(sheet), 'bid sheet');
-  return { sheet, text: renderBidSheet(sheet) };
+  return { sheet, netbacks, text: parts.join('\n') };
+}
+
+/**
+ * What each destination nets back to the pit. The highest delivered bid is
+ * frequently not the best one, which is the whole reason for printing it beside
+ * the posted bids rather than on a sheet of its own.
+ */
+export function netbackTable(options, sheet) {
+  const document = readJsonFile(options.freight, 'freight file');
+  const bushels = Number(options.loadBushels ?? document.loadBushels ?? 900);
+  const commodity = options.commodity ?? sheet.rows[0].commodity;
+  const spot = sheet.rows.find((row) => row.commodity === commodity);
+  return compareDestinations(
+    (document.rates ?? []).map((entry) => ({
+      rate: createFreightRate(entry),
+      deliveredPoints: entry.deliveredPoints ?? spot.bidPoints + (entry.overThePitPoints ?? 2500),
+    })),
+    { bushels, commodity }
+  );
+}
+
+export function renderNetbacks(rows) {
+  return [
+    heading('what each destination nets back'),
+    '',
+    renderTable(
+      [
+        textColumn('destination', 'destination'),
+        priceColumn('delivered', 'deliveredPoints'),
+        priceColumn('freight', 'freightPoints'),
+        priceColumn('netback', 'netbackPoints'),
+      ],
+      rows
+    ),
+    '',
+    describeNetback(rows[0]),
+  ].join('\n');
 }
 
 export function bidsCsv(sheet) {
@@ -52,6 +95,8 @@ export function register(program) {
     .requiredOption('-d, --day <day>', 'the day the boards are for')
     .option('-c, --house <path>', 'the house configuration file')
     .option('--commodity <id>', 'only this commodity')
+    .option('--freight <path>', 'a freight file, to show what each destination nets back')
+    .option('--load-bushels <bushels>', 'the load the freight is spread over')
     .option('-o, --out <path>', 'write the sheet to a csv')
     .action((options) => {
       const result = runBids(options);

@@ -1,0 +1,26 @@
+{
+  "rates": [
+    {
+      "id": "F-BLAIR",
+      "destination": "Blair NE",
+      "kind": "perBushel",
+      "points": 1800,
+      "miles": 96
+    },
+    {
+      "id": "F-ATCHISON",
+      "destination": "Atchison KS",
+      "kind": "perMile",
+      "dollarsPerMile": 3.4,
+      "miles": 48,
+      "fuelSurchargePercent": 9
+    },
+    {
+      "id": "F-RIVER",
+      "destination": "the river",
+      "kind": "flat",
+      "dollars": 210
+    }
+  ],
+  "loadBushels": 900
+}

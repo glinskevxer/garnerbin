@@ -58,6 +58,34 @@ describe('the bid sheet', () => {
   });
 });
 
+describe('the netback table', () => {
+  const withFreight = { ...base, freight: example('freight-2026.json') };
+
+  it('says nothing about freight when no file was given', () => {
+    expect(runBids(base).netbacks).toBeNull();
+    expect(runBids(base).text).not.toContain('nets back');
+  });
+
+  it('ranks the destinations by what they net at the pit', () => {
+    const result = runBids(withFreight);
+    expect(result.netbacks).toHaveLength(3);
+    expect(result.text).toContain('what each destination nets back');
+    const [best] = result.netbacks;
+    expect(best.netbackPoints).toBeGreaterThanOrEqual(result.netbacks[1].netbackPoints);
+  });
+
+  it('spreads a flat rate over the load it was given', () => {
+    const small = runBids({ ...withFreight, loadBushels: '450' });
+    const river = small.netbacks.find((row) => row.destination === 'the river');
+    const bigger = runBids(withFreight).netbacks.find((row) => row.destination === 'the river');
+    expect(river.freightPoints).toBeGreaterThan(bigger.freightPoints);
+  });
+
+  it('says which one to haul to in words', () => {
+    expect(runBids(withFreight).text).toMatch(/bids .* and nets .* after .* of freight/);
+  });
+});
+
 describe('writing it out', () => {
   it('writes a csv with a row for each quote', async () => {
     const out = join(directory, 'bids.csv');

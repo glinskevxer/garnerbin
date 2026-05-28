@@ -25,7 +25,8 @@ standing at the window.
   unhedged column the lender reads.
 - Marks the hedge book and works the margin call back to initial.
 - Keeps grower accounts and prints the payables book and the statements.
-- Plans rail loading against the gross rail load and the cube, whichever bites.
+- Plans rail loading against the gross rail load and the cube, whichever bites,
+  and ranks destinations by what they net back at the pit.
 
 ## Running it
 

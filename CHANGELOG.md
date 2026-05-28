@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- The bid sheet can show what each destination nets back after freight.
+- The contract register values the open legs and prices the roll.
+- A ship command checks a loaded train against the order before it moves.
+
 - Premium scales run through the settlement, so a house that pays for protein
   and discounts for damage does both to the same price.
 - The sample file and the scale tests are on the exception sheet.
