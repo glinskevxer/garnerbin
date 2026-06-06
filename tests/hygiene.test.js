@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
@@ -77,6 +77,76 @@ describe('the source', () => {
   it('reads the clock nowhere at all', () => {
     for (const file of sourceFiles) {
       expect(read(file), relative(file)).not.toMatch(/Date\.now\(\)|new Date\(\)/);
+    }
+  });
+});
+
+/**
+ * Modules the command line does not reach.
+ *
+ * These are library only on purpose: the package exports them and an office
+ * script can call them, but no command does. The list is written down so a
+ * module that quietly stops being reachable shows up here rather than rotting,
+ * and so a new module has to be a deliberate addition to it.
+ */
+const LIBRARY_ONLY = [
+  'contracts/minprice.js',
+  'inventory/grainbank.js',
+  'inventory/movements.js',
+  'io/store.js',
+  'loadout/truck.js',
+  'settlement/advance.js',
+  'storage/receipts.js',
+];
+
+function reachableFromCommands() {
+  const edges = new Map();
+  for (const file of sourceFiles) {
+    const from = dirname(file);
+    const out = [...read(file).matchAll(/from '(\.[^']+)'/g)].map((match) =>
+      resolve(from, match[1])
+    );
+    edges.set(file, out);
+  }
+  const seen = new Set();
+  const stack = sourceFiles.filter((file) => relative(file).startsWith('src/cli/'));
+  while (stack.length > 0) {
+    const file = stack.pop();
+    if (seen.has(file)) continue;
+    seen.add(file);
+    for (const next of edges.get(file) ?? []) stack.push(next);
+  }
+  return seen;
+}
+
+describe('what the command line reaches', () => {
+  const reached = reachableFromCommands();
+
+  it('reaches everything except the modules written down as library only', () => {
+    const unreached = sourceFiles
+      .map((file) => relative(file).replace(/^src\//, ''))
+      .filter((name) => name !== 'index.js')
+      .filter((name) => !reached.has(join(root, 'src', name)));
+    expect(unreached.sort()).toEqual([...LIBRARY_ONLY].sort());
+  });
+
+  it('exports every library only module from the index', () => {
+    const index = read(join(root, 'src', 'index.js'));
+    for (const name of LIBRARY_ONLY) {
+      expect(index, name).toContain(`from './${name}'`);
+    }
+  });
+
+  it('has a test for every library only module', () => {
+    const tested = new Set(
+      testFiles.map((file) =>
+        relative(file)
+          .replace(/^tests\//, '')
+          .replace(/\.test\.js$/, '.js')
+      )
+    );
+    for (const name of LIBRARY_ONLY) {
+      expect(tested.has(name), name).toBe(true);
     }
   });
 });

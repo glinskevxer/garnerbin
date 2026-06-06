@@ -1,6 +1,6 @@
 # Changes
 
-## Unreleased
+## 1.0.0
 
 - The bid sheet can show what each destination nets back after freight.
 - The contract register values the open legs and prices the roll.
@@ -26,7 +26,7 @@
 - Aeration decided on equilibrium moisture, and temperature cable readings read
   for shape rather than for absolute degrees.
 
-## Earlier
+## Before that
 
 The first working version covered receiving, grading against the federal tables,
 shrink and dockage, settlement against a posted schedule, contracts of all six

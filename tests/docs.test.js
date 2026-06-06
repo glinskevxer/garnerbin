@@ -53,8 +53,12 @@ describe('the architecture note', () => {
 });
 
 describe('the changelog', () => {
-  it('has an unreleased section', () => {
-    expect(changelog).toContain('## Unreleased');
+  it('has a section for the version in the package', () => {
+    expect(changelog).toContain(`## ${manifest.version}`);
+  });
+
+  it('names the version somewhere a reader will find it', () => {
+    expect(changelog.split('\n')[2]).toBe(`## ${manifest.version}`);
   });
 
   it('is not empty', () => {
@@ -74,6 +78,25 @@ describe('the worked example', () => {
         expect(files, match[1]).toContain(match[1]);
       }
     }
+  });
+});
+
+describe('the version', () => {
+  it('is a plain three part version', () => {
+    expect(manifest.version).toMatch(/^\d+\.\d+\.\d+$/);
+  });
+
+  it('is what the binary reports', async () => {
+    const { execFileSync } = await import('node:child_process');
+    const printed = execFileSync(
+      process.execPath,
+      [join(root, 'bin', 'garnerbin.js'), '--version'],
+      {
+        cwd: root,
+        encoding: 'utf8',
+      }
+    );
+    expect(printed.trim()).toBe(manifest.version);
   });
 });
 

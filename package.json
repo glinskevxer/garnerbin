@@ -1,6 +1,6 @@
 {
   "name": "garnerbin",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Country grain elevator receiving, grading, shrink and settlement",
   "type": "module",
