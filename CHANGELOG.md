@@ -2,6 +2,9 @@
 
 ## 1.0.0
 
+- A bank command, reading the grain bank accounts and the warehouse receipts on
+  one sheet.
+
 - The bid sheet can show what each destination nets back after freight.
 - The contract register values the open legs and prices the roll.
 - A ship command checks a loaded train against the order before it moves.

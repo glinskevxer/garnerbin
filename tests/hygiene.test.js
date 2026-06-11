@@ -91,12 +91,10 @@ describe('the source', () => {
  */
 const LIBRARY_ONLY = [
   'contracts/minprice.js',
-  'inventory/grainbank.js',
   'inventory/movements.js',
   'io/store.js',
   'loadout/truck.js',
   'settlement/advance.js',
-  'storage/receipts.js',
 ];
 
 function reachableFromCommands() {

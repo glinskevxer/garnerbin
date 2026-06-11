@@ -110,6 +110,9 @@ jobs:
       - name: space
         run: npm run space || true
 
+      - name: bank
+        run: npm run bank
+
       - name: storage
         run: npm run storage
 

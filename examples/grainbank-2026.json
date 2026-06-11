@@ -1,0 +1,77 @@
+{
+  "asOf": "2026-03-01",
+  "accounts": [
+    {
+      "id": "GB-KESSEL",
+      "account": "KESSEL",
+      "commodity": "corn",
+      "openedOn": "2025-10-01",
+      "entries": [
+        {
+          "kind": "deposit",
+          "day": "2025-10-09",
+          "bushels": 1000000,
+          "shrinkPercent": 1.5,
+          "ticket": "T-10444"
+        },
+        {
+          "kind": "deposit",
+          "day": "2025-10-10",
+          "bushels": 907800,
+          "shrinkPercent": 1.5,
+          "ticket": "T-10453"
+        },
+        { "kind": "withdrawal", "day": "2025-11-14", "bushels": 200000, "ticket": "T-11001" },
+        { "kind": "withdrawal", "day": "2025-12-12", "bushels": 150000, "ticket": "T-11044" },
+        { "kind": "withdrawal", "day": "2026-02-02", "bushels": 300000, "ticket": "T-11190" }
+      ]
+    },
+    {
+      "id": "GB-VOSS",
+      "account": "VOSS-LAND-CO",
+      "commodity": "corn",
+      "openedOn": "2025-10-01",
+      "allowOverdraft": true,
+      "entries": [
+        {
+          "kind": "deposit",
+          "day": "2025-10-09",
+          "bushels": 400000,
+          "shrinkPercent": 1.5,
+          "ticket": "T-10446"
+        },
+        { "kind": "withdrawal", "day": "2026-01-20", "bushels": 250000, "ticket": "T-11120" },
+        { "kind": "withdrawal", "day": "2026-02-18", "bushels": 200000, "ticket": "T-11205" }
+      ]
+    }
+  ],
+  "receipts": [
+    {
+      "number": "WR-4401",
+      "account": "HALVORSEN",
+      "commodity": "corn",
+      "bushels": 500000,
+      "grade": 2,
+      "bin": "B-1",
+      "issuedOn": "2025-10-15"
+    },
+    {
+      "number": "WR-4402",
+      "account": "DRAKE-TRUST",
+      "commodity": "soybeans",
+      "bushels": 180000,
+      "grade": 2,
+      "bin": "B-3",
+      "issuedOn": "2025-10-20"
+    },
+    {
+      "number": "WR-4403",
+      "account": "HALVORSEN",
+      "commodity": "corn",
+      "bushels": 220000,
+      "grade": 2,
+      "bin": "B-2",
+      "issuedOn": "2024-09-30"
+    }
+  ]
+}

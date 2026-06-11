@@ -25,6 +25,7 @@ describe('the program', () => {
     expect(names).toEqual([
       'accounts',
       'audit',
+      'bank',
       'bids',
       'bins',
       'blend',

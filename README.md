@@ -20,7 +20,8 @@ standing at the window.
   calculator.
 - Keeps contracts of all six kinds, applies loads to them, rolls the futures leg
   and prices the open one.
-- Ages open storage, charges delayed price, tracks warehouse receipts.
+- Ages open storage, charges delayed price, and reads the grain bank and the
+  warehouse receipts together as the two ways grain sits here unowned.
 - Holds the bin ledger, works out blends, and prints the daily position with the
   unhedged column the lender reads.
 - Marks the hedge book and works the margin call back to initial.
@@ -52,6 +53,7 @@ npm run contracts
 npm run bins
 npm run space
 npm run storage
+npm run bank
 npm run accounts
 npm run hedge
 npm run cars
