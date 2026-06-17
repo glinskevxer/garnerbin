@@ -105,13 +105,13 @@ jobs:
         run: npm run contracts
 
       - name: bins
-        run: npm run bins || true
+        run: npm run bins || test $? -eq 1
 
       - name: space
-        run: npm run space || true
+        run: npm run space || test $? -eq 1
 
       - name: bank
-        run: npm run bank
+        run: npm run bank || test $? -eq 1
 
       - name: storage
         run: npm run storage
